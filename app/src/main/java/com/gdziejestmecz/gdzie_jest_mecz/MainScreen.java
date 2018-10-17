@@ -2,26 +2,45 @@ package com.gdziejestmecz.gdzie_jest_mecz;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MainScreen extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private ImageView btn_google, btn_fb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_screen);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        setContentView(R.layout.activity_sign_up_screen);
+
+        bindUIElements();
+        addEventListeners();
+//        setContentView(R.layout.activity_main_screen);
+//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
+    }
+
+    private void addEventListeners() {
+        btn_google.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast toast = Toast.makeText(getApplicationContext(), "signing in with google...", Toast.LENGTH_LONG);
+            }
+        });
+    }
+
+    private void bindUIElements() {
+        this.btn_google = findViewById(R.id.btn_google);
     }
 
 
