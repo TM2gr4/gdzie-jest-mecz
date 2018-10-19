@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.GoogleMap;
 
 public class SignInScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+    public static final int REQUEST_CODE = 777;
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
     private ImageView btn_google, btn_fb;
@@ -30,6 +32,7 @@ public class SignInScreen extends FragmentActivity implements GoogleApiClient.On
         initUIElements();
         initGoogleAuth();
         addEventListeners();
+
     }
 
     private void initGoogleAuth() {
@@ -46,7 +49,6 @@ public class SignInScreen extends FragmentActivity implements GoogleApiClient.On
     private void addEventListeners() {
         btn_google.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                //Toast toast = Toast.makeText(getApplicationContext(), "signing in with google...", Toast.LENGTH_LONG);
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
                 startActivityForResult(intent,777);
             }
@@ -66,17 +68,18 @@ public class SignInScreen extends FragmentActivity implements GoogleApiClient.On
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode == 777){
+        if(requestCode == REQUEST_CODE){
             GoogleSignInResult gsiResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(gsiResult);
         }
     }
 
     private void handleSignInResult(GoogleSignInResult gsiResult) {
+        boolean isSuccess = gsiResult.isSuccess();
         if(gsiResult.isSuccess()){
             goMainScreen();
         } else {
-            Toast.makeText(this,R.string.not_signed_in, Toast.LENGTH_LONG);
+            Toast.makeText(this, "Error: CODE " + gsiResult.getStatus(), Toast.LENGTH_LONG).show();
         }
     }
 
