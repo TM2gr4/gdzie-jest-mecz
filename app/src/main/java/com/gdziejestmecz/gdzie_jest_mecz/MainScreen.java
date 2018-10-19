@@ -1,65 +1,139 @@
 package com.gdziejestmecz.gdzie_jest_mecz;
 
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MainScreen extends FragmentActivity implements OnMapReadyCallback {
+import java.text.BreakIterator;
+
+public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap;
-    private ImageView btn_google, btn_fb;
+    private TextView userFirstnameLabel, userEmailLabel;
+    private ImageView userAvatarImageView;
+    private GoogleApiClient googleApiClient;
+
+    private NavigationView sideBar;
+    private Menu sideMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up_screen);
+        setContentView(R.layout.activity_main_screen);
+        getSupportActionBar().hide();
 
-        bindUIElements();
+        initUIElements();
         addEventListeners();
-//        setContentView(R.layout.activity_main_screen);
-//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
+
+        initGoogleAuth();
+
     }
 
     private void addEventListeners() {
-        btn_google.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast toast = Toast.makeText(getApplicationContext(), "signing in with google...", Toast.LENGTH_LONG);
-            }
-        });
+
     }
 
-    private void bindUIElements() {
-        this.btn_google = findViewById(R.id.btn_google);
+    private void initUIElements() {
+        this.sideBar = findViewById(R.id.sideNav);
+
+        View headerLayout = sideBar.getHeaderView(0);
+        this.userFirstnameLabel = (TextView) headerLayout.findViewById(R.id.userFirstnameLabel);
+        this.userEmailLabel = (TextView) headerLayout.findViewById(R.id.userEmailLabel);
+        this.userAvatarImageView= (ImageView) headerLayout.findViewById(R.id.userAvatarImageView);
+
     }
 
+    private void initGoogleAuth() {
+        GoogleSignInOptions gsio = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gsio)
+                .build();
+    }
+
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+    protected void onStart() {
+        super.onStart();
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+        if (opr.isDone()) {
+            GoogleSignInResult result = opr.get();
+            handleSignInResult(result);
+        } else {
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
+                    handleSignInResult(googleSignInResult);
+                }
+            });
+        }
     }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        if (result.isSuccess()) {
+            fillUserInfo(result);
+        }
+    }
+
+    private void fillUserInfo(GoogleSignInResult result) {
+        GoogleSignInAccount account = result.getSignInAccount();
+
+        userFirstnameLabel.setText(account.getDisplayName());
+        userEmailLabel.setText(account.getEmail());
+        Glide.with(this).load(account.getPhotoUrl()).into(userAvatarImageView);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.side_view, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.sign_out_label:
+                signOut();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void signOut() {
+        Toast.makeText(this, "Signing out....", Toast.LENGTH_SHORT).show();
+    }
+
 }

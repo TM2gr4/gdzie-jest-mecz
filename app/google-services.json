@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "97380341635",
+    "firebase_url": "https://gdzie-jest-mecz.firebaseio.com",
+    "project_id": "gdzie-jest-mecz",
+    "storage_bucket": "gdzie-jest-mecz.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:97380341635:android:0c57119b929a56a5",
+        "android_client_info": {
+          "package_name": "com.gdziejestmecz.gdzie_jest_mecz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "97380341635-up1vtumfok6u3c0khepb5o468chitkhr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gdziejestmecz.gdzie_jest_mecz",
+            "certificate_hash": "060e3296dab68bfac03ced8866683ab7f868d757"
+          }
+        },
+        {
+          "client_id": "97380341635-3ff5ilm68av88n8rpa2uk43nlpcjm60r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzvtqRkxtisWcXMI59RZJxLXG_r6rjbE0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "97380341635-3ff5ilm68av88n8rpa2uk43nlpcjm60r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

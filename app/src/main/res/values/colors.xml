@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="lightGray">#c3c3c3</color>
+    <color name="boneWhite">#fafafa</color>
     <color name="blackyBlack">#111112</color>
     <color name="wineRed">#E10606</color>
 </resources>

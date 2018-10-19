@@ -30,6 +30,12 @@
         <activity
             android:name=".MainScreen"
             android:label="@string/title_activity_main_screen">
+
+        </activity>
+
+        <activity
+            android:name=".SignInScreen"
+            android:label="SigninScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
