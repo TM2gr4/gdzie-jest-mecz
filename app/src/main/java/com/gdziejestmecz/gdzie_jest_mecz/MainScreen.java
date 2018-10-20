@@ -1,19 +1,27 @@
 package com.gdziejestmecz.gdzie_jest_mecz;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -36,8 +44,10 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
     private ImageView userAvatarImageView;
     private GoogleApiClient googleApiClient;
 
+    private DrawerLayout drawerLayout;
     private NavigationView sideBar;
     private Menu sideMenu;
+    private Button plusBtn, menuBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +63,29 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
     }
 
     private void addEventListeners() {
-
+        plusBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(MainScreen.this, "@string/plus_tapped", Toast.LENGTH_SHORT).show();
+            }
+        });
+        menuBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(MainScreen.this, "@string/menu_tapped", Toast.LENGTH_SHORT).show();
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
     }
 
     private void initUIElements() {
+        this.drawerLayout = findViewById(R.id.drawerLayout);
         this.sideBar = findViewById(R.id.sideNav);
+        this.plusBtn = findViewById(R.id.plus_btn);
+        this.menuBtn = findViewById(R.id.menuBtn);
 
         View headerLayout = sideBar.getHeaderView(0);
-        this.userFirstnameLabel = (TextView) headerLayout.findViewById(R.id.userFirstnameLabel);
-        this.userEmailLabel = (TextView) headerLayout.findViewById(R.id.userEmailLabel);
-        this.userAvatarImageView= (ImageView) headerLayout.findViewById(R.id.userAvatarImageView);
+        this.userFirstnameLabel = headerLayout.findViewById(R.id.userFirstnameLabel);
+        this.userEmailLabel = headerLayout.findViewById(R.id.userEmailLabel);
+        this.userAvatarImageView = headerLayout.findViewById(R.id.userAvatarImageView);
 
     }
 
@@ -106,7 +129,17 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
 
         userFirstnameLabel.setText(account.getDisplayName());
         userEmailLabel.setText(account.getEmail());
-        Glide.with(this).load(account.getPhotoUrl()).into(userAvatarImageView);
+
+        final Context context = getApplicationContext();
+        Glide.with(context).load(account.getPhotoUrl()).asBitmap().centerCrop().into(new BitmapImageViewTarget(userAvatarImageView) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                userAvatarImageView.setImageDrawable(circularBitmapDrawable);
+            }
+        });
     }
 
     @Override
@@ -122,7 +155,6 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.sign_out_label:
                 signOut();
