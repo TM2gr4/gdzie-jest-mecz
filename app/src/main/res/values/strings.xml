@@ -5,4 +5,5 @@
     <string name="signed_in">User signed in!</string>
     <string name="closest_events">Najbliższe transmisje:</string>
     <string name="sorting_label">Sortowanie</string>
+    <string name="plus_sign">+</string>
 </resources>
