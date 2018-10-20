@@ -2,8 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/boneWhite"
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/logo_box"
@@ -61,14 +63,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="17dp"
         android:src="@drawable/google_sing_in_button" />
-
-    <ImageView
-        android:id="@+id/btn_fb"
-        android:layout_width="279dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="17dp"
-        android:src="@drawable/fb_sing_in_button" />
 
     <TextView
         android:id="@+id/textView3"

@@ -1,29 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
     <LinearLayout
         android:id="@+id/userBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/header_gradient"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
 
         <ImageView
             android:id="@+id/userAvatarImageView"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:background="@color/common_google_signin_btn_text_light_disabled" />
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="6dp" />
 
         <TextView
             android:id="@+id/userFirstnameLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:fontFamily="sans-serif-light"
+            android:gravity="center_horizontal"
+            android:text="TextView"
+            android:textColor="@color/boneWhite"
+            android:textSize="18sp"
+            app:fontFamily="@font/roboto_light" />
 
         <TextView
             android:id="@+id/userEmailLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:gravity="center_horizontal"
+            android:text="TextView"
+            android:textColor="@color/boneWhite"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            app:fontFamily="@font/roboto_light" />
     </LinearLayout>
 </LinearLayout>
