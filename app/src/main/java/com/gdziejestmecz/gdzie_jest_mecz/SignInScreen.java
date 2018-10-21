@@ -1,13 +1,12 @@
 package com.gdziejestmecz.gdzie_jest_mecz;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -37,6 +36,7 @@ public class SignInScreen extends FragmentActivity implements GoogleApiClient.On
 
     private void initGoogleAuth() {
         GoogleSignInOptions gsio = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
@@ -50,7 +50,7 @@ public class SignInScreen extends FragmentActivity implements GoogleApiClient.On
         btn_google.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(intent,777);
+                startActivityForResult(intent, 777);
             }
         });
     }
@@ -68,7 +68,7 @@ public class SignInScreen extends FragmentActivity implements GoogleApiClient.On
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == REQUEST_CODE){
+        if (requestCode == REQUEST_CODE) {
             GoogleSignInResult gsiResult = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(gsiResult);
         }
@@ -76,7 +76,9 @@ public class SignInScreen extends FragmentActivity implements GoogleApiClient.On
 
     private void handleSignInResult(GoogleSignInResult gsiResult) {
         boolean isSuccess = gsiResult.isSuccess();
-        if(gsiResult.isSuccess()){
+        if (gsiResult.isSuccess()) {
+            //TODO wysłać na backend i przeprowadzić autoryzację
+            System.out.println("TOKEN " + gsiResult.getSignInAccount().getIdToken());
             goMainScreen();
         } else {
             Toast.makeText(this, "Error: CODE " + gsiResult.getStatus(), Toast.LENGTH_LONG).show();
