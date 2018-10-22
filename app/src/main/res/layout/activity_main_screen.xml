@@ -112,6 +112,14 @@
                         tools:textColor="@color/lightGray" />
                 </LinearLayout>
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/eventListItemBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MECZ BOXX HERE"
+                android:textColor="@color/blackyBlack" />
+
         </LinearLayout>
     </LinearLayout>
 
@@ -122,8 +130,6 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/header"
         app:menu="@menu/side_view">
-
-
     </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

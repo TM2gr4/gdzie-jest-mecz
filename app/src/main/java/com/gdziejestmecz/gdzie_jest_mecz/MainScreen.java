@@ -1,11 +1,9 @@
 package com.gdziejestmecz.gdzie_jest_mecz;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -13,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +21,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.gdziejestmecz.gdzie_jest_mecz.models.EventData;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -31,16 +31,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.BreakIterator;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap;
-    private TextView userFirstnameLabel, userEmailLabel;
+    private TextView userFirstnameLabel, userEmailLabel, eventListItemBox;
     private ImageView userAvatarImageView;
     private GoogleApiClient googleApiClient;
 
@@ -48,6 +46,7 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
     private NavigationView sideBar;
     private Menu sideMenu;
     private Button plusBtn, menuBtn;
+    private ArrayList<EventData> eventDataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +59,26 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
 
         initGoogleAuth();
 
+        createFakeEvents();
+        renderEvents();
+    }
+
+    private void renderEvents() {
+        for (EventData eventData : eventDataList) {
+
+        }
+    }
+
+    private void createFakeEvents() {
+        eventDataList = new ArrayList<EventData>();
+
+        EventData match1 = new EventData("RKS Chuwdu", "Real Madrid", "Speluno", LocalDateTime.now());
+        EventData match2 = new EventData("RKS Chuwdu", "Real Madrid", "Pub Biblioteka", LocalDateTime.now());
+        EventData match3 = new EventData("RKS Chuwdu", "Real Madrid", "Pub Kij", LocalDateTime.now());
+
+        eventDataList.add(match1);
+        eventDataList.add(match2);
+        eventDataList.add(match3);
     }
 
     private void addEventListeners() {
@@ -74,6 +93,12 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
                 drawerLayout.openDrawer(Gravity.LEFT);
             }
         });
+        eventListItemBox.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Toast.makeText(MainScreen.this, "@string/eventItemBox_tapped", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     private void initUIElements() {
@@ -81,6 +106,7 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
         this.sideBar = findViewById(R.id.sideNav);
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
+        this.eventListItemBox = findViewById(R.id.eventListItemBox);
 
         View headerLayout = sideBar.getHeaderView(0);
         this.userFirstnameLabel = headerLayout.findViewById(R.id.userFirstnameLabel);
@@ -149,7 +175,8 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.side_view, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.side_view, menu);
         return true;
     }
 
