@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,9 +45,9 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
 
     private DrawerLayout drawerLayout;
     private NavigationView sideBar;
-    private Menu sideMenu;
     private Button plusBtn, menuBtn;
     private ArrayList<EventData> eventDataList;
+    private LinearLayout eventsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,10 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
 
     private void renderEvents() {
         for (EventData eventData : eventDataList) {
+            TextView teamOne = new TextView(this);
+            teamOne.append(eventData.teamOneName);
 
+            eventsList.addView(teamOne);
         }
     }
 
@@ -107,6 +111,7 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
         this.eventListItemBox = findViewById(R.id.eventListItemBox);
+        this.eventsList = findViewById(R.id.eventsList);
 
         View headerLayout = sideBar.getHeaderView(0);
         this.userFirstnameLabel = headerLayout.findViewById(R.id.userFirstnameLabel);
