@@ -1,7 +1,9 @@
 package com.gdziejestmecz.gdzie_jest_mecz;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -31,13 +33,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.BreakIterator;
-
-public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap;
     private TextView userFirstnameLabel, userEmailLabel;
@@ -49,11 +46,14 @@ public class MainScreen extends AppCompatActivity implements GoogleApiClient.OnC
     private Menu sideMenu;
     private Button plusBtn, menuBtn;
 
+    private static final String[] INITIAL_PERMS={
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
-        getSupportActionBar().hide();
 
         initUIElements();
         addEventListeners();
