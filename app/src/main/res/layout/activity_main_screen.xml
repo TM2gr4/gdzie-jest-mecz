@@ -58,11 +58,11 @@
 
         </LinearLayout>
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
+        <fragment
+            android:id="@+id/fragmentMap"
+            android:name="com.gdziejestmecz.gdzie_jest_mecz.MapViewFragment"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_weight="1" />
+            android:layout_height="215dp" />
 
         <LinearLayout
             android:id="@+id/eventsList"
