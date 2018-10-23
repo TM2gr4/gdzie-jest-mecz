@@ -83,6 +83,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="left"
                     android:text="@string/closest_events"
+                    android:textColor="@color/blackyBlack"
                     android:textSize="18sp"
                     app:fontFamily="@font/montserrat"
                     tools:textColor="@color/blackyBlack" />
@@ -112,13 +113,6 @@
                         tools:textColor="@color/lightGray" />
                 </LinearLayout>
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/eventListItemBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="MECZ BOXX HERE"
-                android:textColor="@color/blackyBlack" />
 
         </LinearLayout>
     </LinearLayout>
