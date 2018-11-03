@@ -1,14 +1,15 @@
 package com.gdziejestmecz.gdzie_jest_mecz.components;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.graphics.Color;
+import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,11 +34,24 @@ public class EventListAdapter extends ArrayAdapter<EventData> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        return generateItems(position);
+        if(eventDataList.size() == 0){
+            LinearLayout LLlistMainWrapper = new LinearLayout(context);
+            LinearLayout.LayoutParams defaultLLparams = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+            LLlistMainWrapper.setLayoutParams(defaultLLparams);
+
+            TextView noEventsLabel = new TextView(context);
+            noEventsLabel.setText("Ups! Brak meczyków :(");
+
+            LLlistMainWrapper.addView(noEventsLabel);
+            return LLlistMainWrapper;
+        };
+
+        return renderListItems(position);
     }
 
-    private LinearLayout generateItems(int position) {
-
+    private LinearLayout renderListItems(int position) {
         LinearLayout LLlistMainWrapper = new LinearLayout(context);
         LinearLayout.LayoutParams defaultLLparams = new LinearLayout.LayoutParams
                 (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -161,14 +175,27 @@ public class EventListAdapter extends ArrayAdapter<EventData> {
         LinearLayout LLSwipeBackground = new LinearLayout(context);
         LLSwipeBackground.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                                             LinearLayout.LayoutParams.MATCH_PARENT));
+        LLSwipeBackground.setBackgroundColor(Colors.lightGray);
+        LLSwipeBackground.setGravity(Gravity.CENTER);
+
+        TextView swipeActionLabel = new TextView(context);
+        swipeActionLabel.setTextColor(Color.WHITE);
+        swipeActionLabel.setTextSize(18);
+
+        ImageView icoBox = new ImageView(context);
+        LLSwipeBackground.setOrientation(LinearLayout.HORIZONTAL);
+
+        LLSwipeBackground.addView(icoBox);
+        LLSwipeBackground.addView(swipeActionLabel);
+
         swipeLayout.addView(LLSwipeBackground);
         swipeLayout.addView(eventCard);
 
-        configSwipe(swipeLayout, LLSwipeBackground);
+        handleSwipeAction(swipeLayout, LLSwipeBackground, swipeActionLabel, icoBox, position);
         return LLlistMainWrapper;
     }
 
-    private void configSwipe(SwipeLayout swipeLayout, LinearLayout background) {
+    private void handleSwipeAction(SwipeLayout swipeLayout, final LinearLayout background, final TextView swipeActionLabel, final ImageView icoBox, final int position) {
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         swipeLayout.addDrag(SwipeLayout.DragEdge.Left, background);
 
@@ -179,18 +206,52 @@ public class EventListAdapter extends ArrayAdapter<EventData> {
             }
 
             @Override
-            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+            public void onUpdate(final SwipeLayout layout, int leftOffset, int topOffset) {
                 Log.d("SwipeEvent", "its being swipped");
             }
 
             @Override
             public void onStartOpen(SwipeLayout layout) {
+                if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
+                    Log.d("SwipeEvent", "dragged left");
+                    background.setBackgroundColor(Colors.lapisBlue);
+                    swipeActionLabel.setText("Dodano do obserwowanych");
+                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_border_white_48dp));
 
+                } else {
+                    Log.d("SwipeEvent", "dragged right");
+                    background.setBackgroundColor(Color.RED);
+                    swipeActionLabel.setText("Usunięty");
+                    icoBox.setBackgroundResource(R.drawable.ic_delete_forever_white_48dp);
+                }
             }
 
             @Override
-            public void onOpen(SwipeLayout layout) {
+            public void onOpen(final SwipeLayout layout) {
                 Log.d("SwipeEvent", "onOpen");
+
+                if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
+                    Log.d("SwipeEvent", "opened left");
+                    //dodajDoObserwowanych()
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            layout.close(true);
+                        }
+                    }, 1000);
+                } else {
+                    Log.d("SwipeEvent", "opened right");
+
+                    final Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            deleteEvent(position);
+                        }
+                    }, 500);
+                }
             }
 
             @Override
@@ -205,4 +266,14 @@ public class EventListAdapter extends ArrayAdapter<EventData> {
         });
     }
 
+    private void deleteEvent(int itemId){
+        eventDataList.remove(itemId);
+        Log.d("EventAction", "removed " + itemId);
+
+        refreshEventList();
+    }
+
+    private void refreshEventList() {
+        this.notifyDataSetChanged();
+    }
 }

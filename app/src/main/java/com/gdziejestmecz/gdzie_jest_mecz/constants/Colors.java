@@ -8,5 +8,6 @@ public class Colors {
     public final static int boneWhite = Color.rgb(250, 250, 250);
     public final static int blackyBlack = Color.rgb(17, 17, 18);
     public final static int lightGray = Color.rgb(195,195, 195);
+    public final static int lapisBlue = Color.rgb(42,86, 198);
 
 }

@@ -2,10 +2,7 @@ package com.gdziejestmecz.gdzie_jest_mecz;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.os.Bundle;
@@ -13,8 +10,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +25,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.constants.Colors;
 import com.gdziejestmecz.gdzie_jest_mecz.models.EventData;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -74,12 +68,13 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
         initGoogleAuth();
 
-        createFakeEvents();
+        renderEventList();
     }
 
 
-    private void createFakeEvents() {
-        eventDataList = new ArrayList<EventData>();
+    private void renderEventList() {
+
+        eventDataList = new ArrayList<EventData>(); //Api.getEvents();
 
         EventData match1 = new EventData("RKS Chuwdu", "JBC Falubas", "Speluno", LocalDateTime.now());
         EventData match2 = new EventData("ZHR Zahir", "KNG Krule", "Speluno", LocalDateTime.now());
@@ -92,7 +87,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         eventDataList.add(match4);
 
         eventsListContent.setAdapter(new EventListAdapter(this, eventDataList));
-
     }
 
     private void addEventListeners() {
