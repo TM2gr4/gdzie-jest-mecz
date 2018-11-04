@@ -17,24 +17,24 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.gdziejestmecz.gdzie_jest_mecz.R;
 import com.gdziejestmecz.gdzie_jest_mecz.constants.Colors;
-import com.gdziejestmecz.gdzie_jest_mecz.models.EventData;
+import com.gdziejestmecz.gdzie_jest_mecz.models.MatchData;
 
 import java.util.ArrayList;
 
-public class EventListAdapter extends ArrayAdapter<EventData> {
+public class EventListAdapter extends ArrayAdapter<MatchData> {
     private Context context;
-    private ArrayList<EventData> eventDataList;
+    private ArrayList<MatchData> matchDataList;
 
-    public EventListAdapter(Context context, ArrayList<EventData> data) {
+    public EventListAdapter(Context context, ArrayList<MatchData> data) {
         super(context, -1, -1, data);
         this.context = context;
-        this.eventDataList = data;
+        this.matchDataList = data;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if(eventDataList.size() == 0){
+        if(matchDataList.size() == 0){
             LinearLayout LLlistMainWrapper = new LinearLayout(context);
             LinearLayout.LayoutParams defaultLLparams = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -58,7 +58,7 @@ public class EventListAdapter extends ArrayAdapter<EventData> {
 
         LLlistMainWrapper.setLayoutParams(defaultLLparams);
 
-        EventData eventData = super.getItem(position);
+        MatchData matchData = super.getItem(position);
 
         SwipeLayout swipeLayout = new SwipeLayout(context);
 
@@ -95,7 +95,7 @@ public class EventListAdapter extends ArrayAdapter<EventData> {
         date.setGravity(Gravity.CENTER);
 
         TextView time = new TextView(context);
-        time.setText("19:20");
+        time.setText(matchData.time.getHour() + ":" + matchData.time.getMinute());
         time.setTextColor(Colors.blackyBlack);
         time.setTextSize(24);
         time.setGravity(Gravity.CENTER);
@@ -153,7 +153,7 @@ public class EventListAdapter extends ArrayAdapter<EventData> {
         teamTwoLogo.setBackgroundResource(R.drawable.logo_real_madryt);
 
         TextView teams = new TextView(context);
-        teams.setText(eventData.teamOneName + " - " + eventData.teamTwoName);
+        teams.setText(matchData.homeTeam.getName()+ " - " + matchData.awayTeam.getName());
         teams.setGravity(Gravity.CENTER);
         teams.setTextColor(Colors.blackyBlack);
         teams.setTextSize(15);
@@ -267,7 +267,7 @@ public class EventListAdapter extends ArrayAdapter<EventData> {
     }
 
     private void deleteEvent(int itemId){
-        eventDataList.remove(itemId);
+        matchDataList.remove(itemId);
         Log.d("EventAction", "removed " + itemId);
 
         refreshEventList();

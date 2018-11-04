@@ -25,7 +25,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.models.EventData;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveEvents;
+import com.gdziejestmecz.gdzie_jest_mecz.models.MatchData;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -49,8 +51,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private DrawerLayout drawerLayout;
     private NavigationView sideBar;
     private Button plusBtn, menuBtn;
-    private ArrayList<EventData> eventDataList;
-    private LinearLayout eventsList;
+    private ArrayList<MatchData> matchDataList;
 
     private ListView eventsListContent;
 
@@ -73,20 +74,22 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
 
     private void renderEventList() {
+        new RetrieveEvents().execute();
+        matchDataList = new ArrayList<MatchData>();
+        Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
+        Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
 
-        eventDataList = new ArrayList<EventData>(); //Api.getEvents();
+        MatchData match1 = new MatchData(0, sampleHomeTeam, sampleAwayTeam, "12-10-2018", LocalDateTime.now());
+        MatchData match2 = new MatchData(1, sampleAwayTeam, sampleHomeTeam, "12-10-2018", LocalDateTime.now());
+        MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", LocalDateTime.now());
+        MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", LocalDateTime.now());
 
-        EventData match1 = new EventData("RKS Chuwdu", "JBC Falubas", "Speluno", LocalDateTime.now());
-        EventData match2 = new EventData("ZHR Zahir", "KNG Krule", "Speluno", LocalDateTime.now());
-        EventData match3 = new EventData("RTS Duppa", "JBC Falubas", "Speluno", LocalDateTime.now());
-        EventData match4 = new EventData("POLONIA NAPLETON", "JBC Falubas", "Speluno", LocalDateTime.now());
+        matchDataList.add(match1);
+        matchDataList.add(match2);
+        matchDataList.add(match3);
+        matchDataList.add(match4);
 
-        eventDataList.add(match1);
-        eventDataList.add(match2);
-        eventDataList.add(match3);
-        eventDataList.add(match4);
-
-        eventsListContent.setAdapter(new EventListAdapter(this, eventDataList));
+        eventsListContent.setAdapter(new EventListAdapter(this, matchDataList));
     }
 
     private void addEventListeners() {
@@ -108,14 +111,12 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.sideBar = findViewById(R.id.sideNav);
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
-        this.eventsList = findViewById(R.id.eventsList);
         this.eventsListContent = findViewById(R.id.eventsListContent);
 
         View headerLayout = sideBar.getHeaderView(0);
         this.userFirstnameLabel = headerLayout.findViewById(R.id.userFirstnameLabel);
         this.userEmailLabel = headerLayout.findViewById(R.id.userEmailLabel);
         this.userAvatarImageView = headerLayout.findViewById(R.id.userAvatarImageView);
-
     }
 
     private void initGoogleAuth() {
