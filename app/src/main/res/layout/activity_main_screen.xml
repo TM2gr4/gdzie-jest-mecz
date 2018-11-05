@@ -65,6 +65,28 @@
                 android:layout_height="215dp" android:tag="fragmentMap"/>
 
         <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/searchBar">
+
+            <EditText
+                    android:layout_width="248dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/searchText"
+                    android:layout_weight="0.5"
+                    android:inputType="textPersonName"
+                    android:hint="@string/search_hint"/>
+
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="@string/search_button" android:id="@+id/searchButton"
+                    android:onClick="searchLocation"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/eventsList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
