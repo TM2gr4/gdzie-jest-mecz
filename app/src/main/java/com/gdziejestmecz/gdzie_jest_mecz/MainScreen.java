@@ -168,4 +168,16 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         Toast.makeText(this, "Signing out....", Toast.LENGTH_SHORT).show();
     }
 
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MapViewFragment.GPS_SETTINGS){
+            if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null)
+                getSupportFragmentManager().findFragmentByTag("fragmentMap").onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+
+    }
 }
