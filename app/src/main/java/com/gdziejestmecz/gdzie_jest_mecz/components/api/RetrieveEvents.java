@@ -1,11 +1,8 @@
 package com.gdziejestmecz.gdzie_jest_mecz.components.api;
 
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.gdziejestmecz.gdzie_jest_mecz.MainScreen;
 import com.gdziejestmecz.gdzie_jest_mecz.constants.ServerInfo;
 import com.gdziejestmecz.gdzie_jest_mecz.models.MatchData;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
@@ -19,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<MatchData>> {
+    public AsyncMatchListResponse delegate = null;
+
     @Override
     protected ArrayList<MatchData> doInBackground(String... strings) {
         try {
@@ -61,7 +60,7 @@ public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<MatchData>
     protected void onPostExecute(ArrayList<MatchData> matchData) {
         super.onPostExecute(matchData);
         Log.d("API_CALL", "Request DONE");
-
+        delegate.retrieveMatchesProcessFinished(matchData);
     }
 
     private Team getTeamById(int id){

@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveEvents;
 import com.gdziejestmecz.gdzie_jest_mecz.models.MatchData;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
@@ -41,7 +44,7 @@ import com.google.android.gms.maps.GoogleMap;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncMatchListResponse {
 
     private GoogleMap mMap;
     private TextView userFirstnameLabel, userEmailLabel;
@@ -54,9 +57,10 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private ArrayList<MatchData> matchDataList;
 
     private ListView eventsListContent;
+    private View addEventPanel;
 
     private static final String[] INITIAL_PERMS={
-            Manifest.permission.ACCESS_FINE_LOCATION
+        Manifest.permission.ACCESS_FINE_LOCATION
     };
 
     @Override
@@ -74,28 +78,17 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
 
     private void renderEventList() {
-        new RetrieveEvents().execute();
-        matchDataList = new ArrayList<MatchData>();
-        Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
-        Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
+        RetrieveEvents retrieveEvents = new RetrieveEvents();
+        retrieveEvents.delegate = this;
 
-        MatchData match1 = new MatchData(0, sampleHomeTeam, sampleAwayTeam, "12-10-2018", LocalDateTime.now());
-        MatchData match2 = new MatchData(1, sampleAwayTeam, sampleHomeTeam, "12-10-2018", LocalDateTime.now());
-        MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", LocalDateTime.now());
-        MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", LocalDateTime.now());
-
-        matchDataList.add(match1);
-        matchDataList.add(match2);
-        matchDataList.add(match3);
-        matchDataList.add(match4);
-
-        eventsListContent.setAdapter(new EventListAdapter(this, matchDataList));
+        retrieveEvents.execute();
     }
 
     private void addEventListeners() {
         plusBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(MainScreen.this, "@string/plus_tapped", Toast.LENGTH_SHORT).show();
+                slideUpDown(addEventPanel);
             }
         });
         menuBtn.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +102,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private void initUIElements() {
         this.drawerLayout = findViewById(R.id.drawerLayout);
         this.sideBar = findViewById(R.id.sideNav);
+        this.addEventPanel = findViewById(R.id.add_event_panel);
+
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
         this.eventsListContent = findViewById(R.id.eventsListContent);
@@ -199,4 +194,47 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         Toast.makeText(this, "Signing out....", Toast.LENGTH_SHORT).show();
     }
 
+    public void slideUpDown(final View view) {
+        if (!isPanelShown()) {
+            // Show the panel
+            Animation bottomUp = AnimationUtils.loadAnimation(this,
+                    R.anim.up_slide);
+
+            addEventPanel.startAnimation(bottomUp);
+            addEventPanel.setVisibility(View.VISIBLE);
+        }
+        else {
+            // Hide the Panel
+            Animation bottomDown = AnimationUtils.loadAnimation(this,
+                    R.anim.bottom_slide);
+
+            addEventPanel.startAnimation(bottomDown);
+            addEventPanel.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean isPanelShown() {
+        return addEventPanel.getVisibility() == View.VISIBLE;
+    }
+
+    @Override
+    public void retrieveMatchesProcessFinished(ArrayList<MatchData> matchList) {
+        matchDataList = matchList;
+      /*  FAKE EVENTS
+        matchDataList = new ArrayList<MatchData>();
+        Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
+        Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
+
+        MatchData match1 = new MatchData(0, sampleHomeTeam, sampleAwayTeam, "12-10-2018", LocalDateTime.now());
+        MatchData match2 = new MatchData(1, sampleAwayTeam, sampleHomeTeam, "12-10-2018", LocalDateTime.now());
+        MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", LocalDateTime.now());
+        MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", LocalDateTime.now());
+
+        matchDataList.add(match1);
+        matchDataList.add(match2);
+        matchDataList.add(match3);
+        matchDataList.add(match4);
+*/
+        eventsListContent.setAdapter(new EventListAdapter(this, matchDataList));
+    }
 }

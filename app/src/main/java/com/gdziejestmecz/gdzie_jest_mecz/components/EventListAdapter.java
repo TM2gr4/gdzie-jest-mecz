@@ -222,7 +222,7 @@ public class EventListAdapter extends ArrayAdapter<MatchData> {
                     Log.d("SwipeEvent", "dragged right");
                     background.setBackgroundColor(Color.RED);
                     swipeActionLabel.setText("Usunięty");
-                    icoBox.setBackgroundResource(R.drawable.ic_delete_forever_white_48dp);
+                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_forever_white_48dp));
                 }
             }
 
