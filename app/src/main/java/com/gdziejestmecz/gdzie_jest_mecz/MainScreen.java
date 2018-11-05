@@ -2,6 +2,7 @@ package com.gdziejestmecz.gdzie_jest_mecz;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -251,5 +252,17 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         matchList.add(match4);
 */
         eventsListContent.setAdapter(new EventListAdapter(this, this.matchList));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MapViewFragment.GPS_SETTINGS){
+            if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null)
+                getSupportFragmentManager().findFragmentByTag("fragmentMap").onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+
     }
 }

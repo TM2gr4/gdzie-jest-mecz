@@ -65,12 +65,18 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/eventsList"
+        <fragment
+                android:id="@+id/fragmentMap"
+                android:name="com.gdziejestmecz.gdzie_jest_mecz.MapViewFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="bottom"
-                android:orientation="vertical">
+                android:layout_height="215dp" android:tag="fragmentMap"/>
+
+        <LinearLayout
+            android:id="@+id/eventsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/eventListHeader"
