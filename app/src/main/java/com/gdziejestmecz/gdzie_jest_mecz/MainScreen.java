@@ -73,7 +73,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             public void onClick(View v) {
                // Toast.makeText(MainScreen.this, "@string/menu_tapped", Toast.LENGTH_SHORT).show();
                 //drawerLayout.openDrawer(Gravity.LEFT);
-                signOut();  
+                signOut();
             }
         });
     }
