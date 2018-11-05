@@ -28,8 +28,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveEvents;
-import com.gdziejestmecz.gdzie_jest_mecz.models.MatchData;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -52,7 +51,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private DrawerLayout drawerLayout;
     private NavigationView sideBar;
     private Button plusBtn, menuBtn;
-    private ArrayList<MatchData> matchDataList;
+    private ArrayList<Match> matchList;
 
     private ListView eventsListContent;
     private View addEventPanel;
@@ -216,10 +215,10 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
 
     @Override
-    public void retrieveMatchesProcessFinished(ArrayList<MatchData> matchList) {
-        matchDataList = matchList;
+    public void retrieveMatchesProcessFinished(ArrayList<Match> matchList) {
+        this.matchList = matchList;
 //        FAKE EVENTS
-        /*matchDataList = new ArrayList<MatchData>();
+        /*matchList = new ArrayList<MatchData>();
         Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
         Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
 
@@ -228,17 +227,17 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
         MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
 
-        matchDataList.add(match1);
-        matchDataList.add(match2);
-        matchDataList.add(match3);
-        matchDataList.add(match4);
-        matchDataList.add(match4);
-        matchDataList.add(match4);
-        matchDataList.add(match4);
-        matchDataList.add(match4);
-        matchDataList.add(match4);
-        matchDataList.add(match4);
+        matchList.add(match1);
+        matchList.add(match2);
+        matchList.add(match3);
+        matchList.add(match4);
+        matchList.add(match4);
+        matchList.add(match4);
+        matchList.add(match4);
+        matchList.add(match4);
+        matchList.add(match4);
+        matchList.add(match4);
 */
-        eventsListContent.setAdapter(new EventListAdapter(this, matchDataList));
+        eventsListContent.setAdapter(new EventListAdapter(this, this.matchList));
     }
 }

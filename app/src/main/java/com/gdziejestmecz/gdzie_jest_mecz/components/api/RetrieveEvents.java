@@ -4,7 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gdziejestmecz.gdzie_jest_mecz.constants.ServerInfo;
-import com.gdziejestmecz.gdzie_jest_mecz.models.MatchData;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
 
 import org.json.JSONArray;
@@ -12,19 +13,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<MatchData>> {
+public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<Match>> {
     public AsyncMatchListResponse delegate = null;
 
     @Override
-    protected ArrayList<MatchData> doInBackground(String... strings) {
+    protected ArrayList<Match> doInBackground(String... strings) {
         try {
             String result = Api.run(ServerInfo.getRootUrl() + ServerInfo.getEndpointMatches());
             Log.d("API_CALL", result);
 
-            ArrayList<MatchData> matches = new ArrayList<MatchData>();
+            ArrayList<Event> events = new ArrayList<Event>();
+
+            ArrayList<Match> matches = new ArrayList<Match>();
+            try {
+                //fetch po eventy
+            } catch(Exception e) {
+
+            }
             try {
                 JSONArray jsonArray = null;
                 jsonArray = new JSONArray(result);
@@ -39,10 +46,11 @@ public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<MatchData>
                     String date = obj.getString("date");
                     String time = obj.getString("time");//LocalDateTime.parse(obj.getString("time"));
 
-                    MatchData matchData = new MatchData(matchId, homeTeam, awayTeam, date, time);
+                    Match match = new Match(matchId, homeTeam, awayTeam, date, time);
 
-                    matches.add(matchData);
+                    matches.add(match);
                 }
+
 
                 return matches;
             }catch(JSONException e) {
@@ -57,7 +65,7 @@ public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<MatchData>
     }
 
     @Override
-    protected void onPostExecute(ArrayList<MatchData> matchData) {
+    protected void onPostExecute(ArrayList<Match> matchData) {
         super.onPostExecute(matchData);
         Log.d("API_CALL", "Request DONE");
         delegate.retrieveMatchesProcessFinished(matchData);

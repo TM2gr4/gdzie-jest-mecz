@@ -1,9 +1,9 @@
 package com.gdziejestmecz.gdzie_jest_mecz.components.api;
 
-import com.gdziejestmecz.gdzie_jest_mecz.models.MatchData;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 
 import java.util.ArrayList;
 
 public interface AsyncMatchListResponse {
-    void retrieveMatchesProcessFinished(ArrayList<MatchData> matchList);
+    void retrieveMatchesProcessFinished(ArrayList<Match> matchList);
 }
