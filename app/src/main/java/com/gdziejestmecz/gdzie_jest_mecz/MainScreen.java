@@ -54,7 +54,9 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private ArrayList<Match> matchList;
 
     private ListView eventsListContent;
+
     private View addEventPanel;
+    private Button closeAddEventPanel;
 
     private static final String[] INITIAL_PERMS={
         Manifest.permission.ACCESS_FINE_LOCATION
@@ -94,12 +96,22 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                 drawerLayout.openDrawer(Gravity.LEFT);
             }
         });
+
+        closeAddEventPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainScreen.this, "closing addEventPanel", Toast.LENGTH_SHORT).show();
+                slideAddEventPanelUpDown(addEventPanel);
+            }
+        });
     }
 
     private void initUIElements() {
         this.drawerLayout = findViewById(R.id.drawerLayout);
         this.sideBar = findViewById(R.id.sideNav);
+
         this.addEventPanel = findViewById(R.id.add_event_panel);
+        this.closeAddEventPanel = findViewById(R.id.x_btn_add_event_panel);
 
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
