@@ -8,9 +8,9 @@ public class MatchData {
     public Team awayTeam; //raczej bedzie to kiedys tylko id druzyny
 //    public Pub pub;      //raczej bedzie to kiedys tylko id pubu
     public String date;
-    public LocalDateTime time;
+    public String time;
 
-    public MatchData(int id, Team homeTeam, Team awayTeam, String date, LocalDateTime time) {
+    public MatchData(int id, Team homeTeam, Team awayTeam, String date, String time) {
         this.id = id;
         this.homeTeam = homeTeam;
         this.awayTeam = awayTeam;

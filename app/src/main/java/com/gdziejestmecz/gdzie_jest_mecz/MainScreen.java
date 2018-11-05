@@ -19,7 +19,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +40,6 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.maps.GoogleMap;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncMatchListResponse {
@@ -88,7 +86,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         plusBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(MainScreen.this, "@string/plus_tapped", Toast.LENGTH_SHORT).show();
-                slideUpDown(addEventPanel);
+                slideAddEventPanelUpDown(addEventPanel);
             }
         });
         menuBtn.setOnClickListener(new View.OnClickListener() {
@@ -194,8 +192,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         Toast.makeText(this, "Signing out....", Toast.LENGTH_SHORT).show();
     }
 
-    public void slideUpDown(final View view) {
-        if (!isPanelShown()) {
+    public void slideAddEventPanelUpDown(final View view) {
+        if (!isAddEventPanelShown()) {
             // Show the panel
             Animation bottomUp = AnimationUtils.loadAnimation(this,
                     R.anim.up_slide);
@@ -213,26 +211,32 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         }
     }
 
-    private boolean isPanelShown() {
+    private boolean isAddEventPanelShown() {
         return addEventPanel.getVisibility() == View.VISIBLE;
     }
 
     @Override
     public void retrieveMatchesProcessFinished(ArrayList<MatchData> matchList) {
         matchDataList = matchList;
-      /*  FAKE EVENTS
-        matchDataList = new ArrayList<MatchData>();
+//        FAKE EVENTS
+        /*matchDataList = new ArrayList<MatchData>();
         Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
         Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
 
-        MatchData match1 = new MatchData(0, sampleHomeTeam, sampleAwayTeam, "12-10-2018", LocalDateTime.now());
-        MatchData match2 = new MatchData(1, sampleAwayTeam, sampleHomeTeam, "12-10-2018", LocalDateTime.now());
-        MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", LocalDateTime.now());
-        MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", LocalDateTime.now());
+        MatchData match1 = new MatchData(0, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
+        MatchData match2 = new MatchData(1, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
+        MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
+        MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
 
         matchDataList.add(match1);
         matchDataList.add(match2);
         matchDataList.add(match3);
+        matchDataList.add(match4);
+        matchDataList.add(match4);
+        matchDataList.add(match4);
+        matchDataList.add(match4);
+        matchDataList.add(match4);
+        matchDataList.add(match4);
         matchDataList.add(match4);
 */
         eventsListContent.setAdapter(new EventListAdapter(this, matchDataList));

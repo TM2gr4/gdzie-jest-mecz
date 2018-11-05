@@ -90,12 +90,12 @@ public class EventListAdapter extends ArrayAdapter<MatchData> {
         nowLabel.setGravity(Gravity.CENTER);
 
         TextView date = new TextView(context);
-        date.setText("09.10");
+        date.setText(matchData.date.split("-")[2] + "." + matchData.date.split("-")[1]);
         date.setTextColor(Colors.lightGray);
         date.setGravity(Gravity.CENTER);
 
         TextView time = new TextView(context);
-        time.setText(matchData.time.getHour() + ":" + matchData.time.getMinute());
+        time.setText(matchData.time.split(":")[0] + ":" + matchData.time.split(":")[1]);
         time.setTextColor(Colors.blackyBlack);
         time.setTextSize(24);
         time.setGravity(Gravity.CENTER);

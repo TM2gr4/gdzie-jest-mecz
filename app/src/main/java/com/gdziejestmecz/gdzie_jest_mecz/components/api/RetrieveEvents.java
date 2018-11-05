@@ -37,7 +37,7 @@ public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<MatchData>
 
                     int matchId = Integer.parseInt(obj.getString("id"));
                     String date = obj.getString("date");
-                    LocalDateTime time = LocalDateTime.now();//LocalDateTime.parse(obj.getString("time"));
+                    String time = obj.getString("time");//LocalDateTime.parse(obj.getString("time"));
 
                     MatchData matchData = new MatchData(matchId, homeTeam, awayTeam, date, time);
 
