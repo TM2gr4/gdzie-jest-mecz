@@ -1,6 +1,7 @@
 package com.gdziejestmecz.gdzie_jest_mecz;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -184,6 +185,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     public void searchLocation(View view) {
         EditText locationSearch = (EditText) findViewById(R.id.searchText);
         final String location = locationSearch.getText().toString();
@@ -191,31 +193,13 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null) {
             mapViewFragment = (MapViewFragment) getSupportFragmentManager().findFragmentByTag("fragmentMap");
         }
-        //List<Address> addressList = null;
-        /*
-        if (location != null || !location.equals("")) {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Address address = addressList.get(0);
+        if(location != null && !location.equals("")) {
+            new AsyncTask<Void, Void, List<Address>>() {
+                @Override
+                protected List<Address> doInBackground(Void... voids) {
+                    List<Address> addressList = null;
 
-            if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null) {
-                mapViewFragment = (MapViewFragment) getSupportFragmentManager().findFragmentByTag("fragmentMap");
-                mapViewFragment.drawMarker(new LatLng(address.getLatitude(), address.getLongitude()), location);
-            }
-        }
-        */
-
-        new AsyncTask<Void,Void,List<Address>>(){
-            @Override
-            protected List<Address> doInBackground(Void... voids){
-                List<Address> addressList = null;
-
-                if (location != null || !location.equals("")) {
                     Geocoder geocoder = new Geocoder(getApplicationContext());
                     try {
                         addressList = geocoder.getFromLocationName(location, 1);
@@ -223,19 +207,19 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    return addressList;
                 }
-                return addressList;
-            }
-            public void onPostExecute(List<Address> addressList){
-                Address address;
-                if(addressList.size()>0) {
-                    address = addressList.get(0);
-                    mapViewFragment.drawMarker(new LatLng(address.getLatitude(), address.getLongitude()), location);
+
+                public void onPostExecute(List<Address> addressList) {
+                    Address address;
+                    if (addressList != null && addressList.size() > 0) {
+                        address = addressList.get(0);
+                        mapViewFragment.drawMarker(new LatLng(address.getLatitude(), address.getLongitude()), location);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Nie znaleziono podanego miejsca", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else{
-                    Toast.makeText(getApplicationContext(),"Nie znaleziono podanego miejsca",Toast.LENGTH_SHORT).show();
-                }
-            }
-        }.execute();
+            }.execute();
+        }
     }
 }
