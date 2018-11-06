@@ -141,12 +141,11 @@ public class MapViewFragment extends Fragment {
 
     }
 
-    private void drawMarker(Location location) {
+    public void drawMarker(LatLng location, String locationName) {
         if (googleMap != null) {
             googleMap.clear();
-            LatLng gps = new LatLng(location.getLatitude(), location.getLongitude());
-            googleMap.addMarker(new MarkerOptions().position(gps).title("Twoja Pozycja").snippet("Jesteś tutaj!"));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(gps, 12));
+            googleMap.addMarker(new MarkerOptions().position(location).title(locationName));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location,15));
         }
     }
 
