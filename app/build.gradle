@@ -8,6 +8,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         resValue "string", "google_maps_key", (project.findProperty("GOOGLE_MAPS_API_KEY") ?: "")
     }
@@ -33,7 +34,12 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.android.support:design:28.0.0'
+
+    implementation 'com.android.support:recyclerview-v7:28.0.0' //v4?
     implementation 'com.android.support:support-v4:28.0.0'
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 }
 
 apply plugin: 'com.android.application'
