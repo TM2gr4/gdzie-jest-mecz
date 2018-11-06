@@ -98,8 +98,8 @@ public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<Event>> {
             try {
                 JSONObject obj = new JSONObject(result);
 
-                Team homeTeam = new Team(0, "RKS Chuwudu", "http:///dupa.com");
-                Team awayTeam = new Team(1, "Polonia Napleton", "http:///dupa.com");
+                Team homeTeam = new Team(0, "Liverpool", "http:///dupa.com");
+                Team awayTeam = new Team(1, "Real Madrid", "http:///dupa.com");
 
                 int matchId = obj.getInt("id");
                 String date = obj.getString("date");

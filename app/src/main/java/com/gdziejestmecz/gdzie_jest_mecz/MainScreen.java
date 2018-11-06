@@ -314,6 +314,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         if(success) {
             Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show();
             slideAddEventPanelUpDown(addEventPanel);
+            clearEventList();
             renderEventList();
         }
     }
