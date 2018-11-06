@@ -70,6 +70,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private EditText input_matchId, input_pubId, input_desc;
     private Button addEventButton;
     private Button closeAddEventPanel;
+    private MapViewFragment mapViewFragment;
 
     private static final String[] INITIAL_PERMS={
         Manifest.permission.ACCESS_FINE_LOCATION
