@@ -44,6 +44,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 
 import java.util.ArrayList;
@@ -101,8 +102,9 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         });
         menuBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(MainScreen.this, "@string/menu_tapped", Toast.LENGTH_SHORT).show();
-                drawerLayout.openDrawer(Gravity.LEFT);
+               // Toast.makeText(MainScreen.this, "@string/menu_tapped", Toast.LENGTH_SHORT).show();
+                //drawerLayout.openDrawer(Gravity.LEFT);
+                signOut();
             }
         });
 
@@ -239,7 +241,18 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
 
     private void signOut() {
-        Toast.makeText(this, "Signing out....", Toast.LENGTH_SHORT).show();
+
+        Auth.GoogleSignInApi.signOut(googleApiClient)
+                .setResultCallback(new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(@NonNull Status status) {
+                        Intent i = new Intent(MainScreen.this,SignInScreen.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                        Toast.makeText(MainScreen.this, "Wylogowano", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
     }
 
     public void slideAddEventPanelUpDown(final View view) {

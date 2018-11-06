@@ -15,53 +15,50 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/mainLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/navBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="60dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp">
 
-            <LinearLayout
-                android:id="@+id/navBar"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp">
+            <Button
+                android:id="@+id/menuBtn"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="10dp"
+                android:width="27dp"
+                android:background="@drawable/ic_menu"
+                android:gravity="left|center_vertical" />
 
-                <Button
-                    android:id="@+id/menuBtn"
-                    android:layout_width="55dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:width="27dp"
-                    android:background="@drawable/ic_menu"
-                    android:gravity="left|center_vertical" />
+            <ImageView
+                android:id="@+id/logo_box"
+                android:layout_width="266dp"
+                android:layout_height="77dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:src="@drawable/logo" />
 
-                <ImageView
-                    android:id="@+id/logo_box"
-                    android:layout_width="266dp"
-                    android:layout_height="77dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="80dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/logo" />
-
-                <Button
-                    android:id="@+id/plus_btn"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/round_shape"
-                    android:text="@string/plus_sign"
-                    android:textColor="@color/boneWhite"
-                    android:textSize="30dp" />
+            <Button
+                android:id="@+id/plus_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/round_shape"
+                android:text="@string/plus_sign"
+                android:textColor="@color/boneWhite"
+                android:textSize="30dp" />
 
             </LinearLayout>
 
