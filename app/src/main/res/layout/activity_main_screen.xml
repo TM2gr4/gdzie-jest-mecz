@@ -65,11 +65,6 @@
 
             </LinearLayout>
 
-        <fragment
-                android:id="@+id/fragmentMap"
-                android:name="com.gdziejestmecz.gdzie_jest_mecz.MapViewFragment"
-                android:layout_width="match_parent"
-                android:layout_height="215dp" android:tag="fragmentMap"/>
 
         <LinearLayout
             android:id="@+id/eventsList"
@@ -150,12 +145,71 @@
         android:background="@android:color/white"
         android:visibility="gone" >
 
-        <Button
-            android:id="@+id/x_btn_add_event_panel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:layout_centerInParent="true"
-            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/x_btn_add_event_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="X" />
+            <TextView
+                android:id="@+id/aep_title_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dodaj event:"
+                app:fontFamily="@font/montserrat" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Id meczu:"
+                app:fontFamily="@font/montserrat" />
+
+            <EditText
+                android:id="@+id/input_matchId"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="id meczu..."
+                android:inputType="phone" />
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ID pubu:"
+                app:fontFamily="@font/montserrat" />
+
+            <EditText
+                android:id="@+id/input_pubId"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="id pubu..."
+                android:inputType="phone" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dodatkowy opis:"
+                app:fontFamily="@font/montserrat" />
+
+            <EditText
+                android:id="@+id/input_desc"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="darmowe piwko?..."/>
+            <Button
+                android:id="@+id/add_btn_add_event_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Dodaj" />
+
+
+
+        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

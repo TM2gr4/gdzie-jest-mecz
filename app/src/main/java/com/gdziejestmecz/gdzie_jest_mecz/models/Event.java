@@ -5,16 +5,18 @@ import java.util.ArrayList;
 public class Event {
     private int id;
     private Match match;
-    private ArrayList<Pub> pubs;
+//    private ArrayList<Pub> pubs;
+    private Pub pub;
     private int numberOfAttendees;
     private double longitude;
     private double latiitude;
     private String description;
 
-    public Event(int id, Match match, ArrayList<Pub> pubs, int numberOfAttendees, double longitude, double latiitude, String description) {
+    public Event(int id, Match match, Pub pub, int numberOfAttendees, double longitude, double latiitude, String description) {
         this.id = id;
         this.match = match;
-        this.pubs = pubs;
+//        this.pubs = pubs;
+        this.pub = pub;
         this.numberOfAttendees = numberOfAttendees;
         this.longitude = longitude;
         this.latiitude = latiitude;
@@ -29,8 +31,12 @@ public class Event {
         return match;
     }
 
-    public ArrayList<Pub> getPubs() {
-        return pubs;
+//    public ArrayList<Pub> getPubs() {
+//        return pubs;
+//    }
+
+    public Pub getPub(){
+     return pub;
     }
 
     public int getNumberOfAttendees() {

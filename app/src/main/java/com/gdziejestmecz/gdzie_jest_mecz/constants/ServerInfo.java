@@ -11,9 +11,12 @@ public class ServerInfo {
     private static final String ENDPOINT_MATCHES = "/matches";
     private static final String ENDPOINT_TEAMS = "/teams";
 
+    private static final String ADD = "/add";
+
     public static String getRootUrl(){ return ROOT_URL;}
     public static String getEndpointEvents(){ return ENDPOINT_EVENTS;}
     public static String getEndpointMatches(){ return ENDPOINT_MATCHES;}
     public static String getEndpointTeams(){ return ENDPOINT_TEAMS;}
 
+    public static String getAdd() {return ADD;}
 }

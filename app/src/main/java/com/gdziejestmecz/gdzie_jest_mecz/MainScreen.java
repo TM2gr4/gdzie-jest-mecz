@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,9 +28,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.PostEvent;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncEventListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveEvents;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -42,7 +48,7 @@ import com.google.android.gms.maps.GoogleMap;
 
 import java.util.ArrayList;
 
-public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncMatchListResponse {
+public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncMatchListResponse, AsyncEventListResponse {
 
     private GoogleMap mMap;
     private TextView userFirstnameLabel, userEmailLabel;
@@ -52,11 +58,13 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private DrawerLayout drawerLayout;
     private NavigationView sideBar;
     private Button plusBtn, menuBtn;
-    private ArrayList<Match> matchList;
+    private ArrayList<Event> eventList;
 
     private ListView eventsListContent;
 
     private View addEventPanel;
+    private EditText input_matchId, input_pubId, input_desc;
+    private Button addEventButton;
     private Button closeAddEventPanel;
 
     private static final String[] INITIAL_PERMS={
@@ -105,6 +113,32 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                 slideAddEventPanelUpDown(addEventPanel);
             }
         });
+
+        addEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainScreen.this, "closing addEventPanel", Toast.LENGTH_SHORT).show();
+                prepareEventToAdd();
+            }
+        });
+    }
+
+    private void prepareEventToAdd() {
+
+        int matchId = Integer.parseInt(input_matchId.getText().toString());
+        int pubId = Integer.parseInt(input_pubId.getText().toString());
+        String desc = input_desc.getText().toString();
+
+        Team team = new Team(999, "ZC Bulwy", "https:///Dsada");
+
+        Match match = new Match(matchId, team, team, "2012-12-10", "14:10");
+        Pub pub = new Pub(pubId, "Pod ostryga", "to jest adres");
+        Event event = new Event(999, match, pub, 0, 1.1, 1.1, desc);
+
+        PostEvent postEvent = new PostEvent(event);
+        postEvent.delegate = this;
+
+        postEvent.execute();
     }
 
     private void initUIElements() {
@@ -112,6 +146,10 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.sideBar = findViewById(R.id.sideNav);
 
         this.addEventPanel = findViewById(R.id.add_event_panel);
+        this.input_matchId = findViewById(R.id.input_matchId);
+        this.input_pubId = findViewById(R.id.input_pubId);
+        this.input_desc = findViewById(R.id.input_desc);
+        this.addEventButton = findViewById(R.id.add_btn_add_event_panel);
         this.closeAddEventPanel = findViewById(R.id.x_btn_add_event_panel);
 
         this.plusBtn = findViewById(R.id.plus_btn);
@@ -227,11 +265,16 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         return addEventPanel.getVisibility() == View.VISIBLE;
     }
 
+    private void clearEventList(){
+        eventList = new ArrayList<Event>();
+
+        eventsListContent.setAdapter(null);
+    }
     @Override
-    public void retrieveMatchesProcessFinished(ArrayList<Match> matchList) {
-        this.matchList = matchList;
+    public void retrieveMatchesProcessFinished(ArrayList<Event> eventList) {
+        this.eventList = eventList;
 //        FAKE EVENTS
-        /*matchList = new ArrayList<MatchData>();
+        /*eventList = new ArrayList<MatchData>();
         Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
         Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
 
@@ -240,18 +283,18 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
         MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
 
-        matchList.add(match1);
-        matchList.add(match2);
-        matchList.add(match3);
-        matchList.add(match4);
-        matchList.add(match4);
-        matchList.add(match4);
-        matchList.add(match4);
-        matchList.add(match4);
-        matchList.add(match4);
-        matchList.add(match4);
+        eventList.add(match1);
+        eventList.add(match2);
+        eventList.add(match3);
+        eventList.add(match4);
+        eventList.add(match4);
+        eventList.add(match4);
+        eventList.add(match4);
+        eventList.add(match4);
+        eventList.add(match4);
+        eventList.add(match4);
 */
-        eventsListContent.setAdapter(new EventListAdapter(this, this.matchList));
+        eventsListContent.setAdapter(new EventListAdapter(this, this.eventList));
     }
 
     @Override
@@ -264,5 +307,14 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             super.onActivityResult(requestCode, resultCode, data);
         }
 
+    }
+
+    @Override
+    public void addEventProcessFinished(boolean success) {
+        if(success) {
+            Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show();
+            slideAddEventPanelUpDown(addEventPanel);
+            renderEventList();
+        }
     }
 }

@@ -17,24 +17,25 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.gdziejestmecz.gdzie_jest_mecz.R;
 import com.gdziejestmecz.gdzie_jest_mecz.constants.Colors;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 
 import java.util.ArrayList;
 
-public class EventListAdapter extends ArrayAdapter<Match> {
+public class EventListAdapter extends ArrayAdapter<Event> {
     private Context context;
-    private ArrayList<Match> matchList;
+    private ArrayList<Event> eventList;
 
-    public EventListAdapter(Context context, ArrayList<Match> data) {
+    public EventListAdapter(Context context, ArrayList<Event> data) {
         super(context, -1, -1, data);
         this.context = context;
-        this.matchList = data;
+        this.eventList = data;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if(matchList.size() == 0){
+        if(eventList.size() == 0){
             LinearLayout LLlistMainWrapper = new LinearLayout(context);
             LinearLayout.LayoutParams defaultLLparams = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -58,7 +59,15 @@ public class EventListAdapter extends ArrayAdapter<Match> {
 
         LLlistMainWrapper.setLayoutParams(defaultLLparams);
 
-        Match match = super.getItem(position);
+        Match match = super.getItem(position).getMatch();
+
+        if (match == null) {
+            TextView errorTextView = new TextView(context);
+            errorTextView.setText("match list returned null");
+
+            LLlistMainWrapper.addView(errorTextView);
+            return LLlistMainWrapper;
+        }
 
         SwipeLayout swipeLayout = new SwipeLayout(context);
 
@@ -267,7 +276,7 @@ public class EventListAdapter extends ArrayAdapter<Match> {
     }
 
     private void deleteEvent(int itemId){
-        matchList.remove(itemId);
+        eventList.remove(itemId);
         Log.d("EventAction", "removed " + itemId);
 
         refreshEventList();
