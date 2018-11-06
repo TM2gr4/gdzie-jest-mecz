@@ -62,14 +62,6 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/google_sing_in_button" />
 
-    <ImageView
-        android:id="@+id/btn_fb"
-        android:layout_width="279dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/fb_sing_in_button" />
-
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
