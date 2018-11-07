@@ -6,4 +6,6 @@
     <string name="closest_events">Najbliższe transmisje:</string>
     <string name="sorting_label">Sortowanie</string>
     <string name="plus_sign">+</string>
+    <string name="search_button">Szukaj</string>
+    <string name="search_hint">Szukaj Lokacji</string>
 </resources>
