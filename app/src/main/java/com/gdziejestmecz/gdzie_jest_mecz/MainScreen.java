@@ -22,7 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -50,7 +56,9 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.util.List;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncMatchListResponse, AsyncEventListResponse {
 
@@ -71,6 +79,11 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private Button addEventButton;
     private Button closeAddEventPanel;
     private MapViewFragment mapViewFragment;
+
+    private View addPubPanel;
+    private EditText input_pub_name;
+    private Button addPubButton;
+    private Button closeAddPubPanel;
 
     private static final String[] INITIAL_PERMS={
         Manifest.permission.ACCESS_FINE_LOCATION
@@ -100,8 +113,22 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private void addEventListeners() {
         plusBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Toast.makeText(MainScreen.this, "@string/plus_tapped", Toast.LENGTH_SHORT).show();
-                slideAddEventPanelUpDown(addEventPanel);
+                PopupMenu popup = new PopupMenu(MainScreen.this, plusBtn);
+                popup.getMenuInflater()
+                        .inflate(R.menu.popup, popup.getMenu());
+
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getTitle().equals("Dodaj Mecz")) {
+                            slidePanel(addEventPanel);
+                        } else if (item.getTitle().equals("Dodaj Pub")) {
+                            slidePanel(addPubPanel);
+                        }
+                        return true;
+                    }
+                });
+
+                popup.show();
             }
         });
         menuBtn.setOnClickListener(new View.OnClickListener() {
@@ -116,14 +143,27 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainScreen.this, "closing addEventPanel", Toast.LENGTH_SHORT).show();
-                slideAddEventPanelUpDown(addEventPanel);
+                slidePanel(addEventPanel);
             }
         });
-
         addEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "closing addEventPanel", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainScreen.this, "adding event", Toast.LENGTH_SHORT).show();
+                prepareEventToAdd();
+            }
+        });
+        closeAddPubPanel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainScreen.this, "closing addPubPanel", Toast.LENGTH_SHORT).show();
+                slidePanel(addPubPanel);
+            }
+        });
+        addPubButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainScreen.this, "adding pub", Toast.LENGTH_SHORT).show();
                 prepareEventToAdd();
             }
         });
@@ -157,6 +197,11 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.input_desc = findViewById(R.id.input_desc);
         this.addEventButton = findViewById(R.id.add_btn_add_event_panel);
         this.closeAddEventPanel = findViewById(R.id.x_btn_add_event_panel);
+
+        this.addPubPanel = findViewById(R.id.add_pub_panel);
+        this.input_matchId = findViewById(R.id.input_pub_name);
+        this.addPubButton = findViewById(R.id.add_btn_add_pub_panel);
+        this.closeAddPubPanel = findViewById(R.id.x_btn_add_pub_panel);
 
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
@@ -259,27 +304,27 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                 });
     }
 
-    public void slideAddEventPanelUpDown(final View view) {
+    public void slidePanel(final View view) {
         if (!isAddEventPanelShown()) {
             // Show the panel
             Animation bottomUp = AnimationUtils.loadAnimation(this,
                     R.anim.up_slide);
 
-            addEventPanel.startAnimation(bottomUp);
-            addEventPanel.setVisibility(View.VISIBLE);
+            view.startAnimation(bottomUp);
+            view.setVisibility(View.VISIBLE);
         }
         else {
             // Hide the Panel
             Animation bottomDown = AnimationUtils.loadAnimation(this,
                     R.anim.bottom_slide);
 
-            addEventPanel.startAnimation(bottomDown);
-            addEventPanel.setVisibility(View.GONE);
+            view.startAnimation(bottomDown);
+            view.setVisibility(View.GONE);
         }
     }
 
     private boolean isAddEventPanelShown() {
-        return addEventPanel.getVisibility() == View.VISIBLE;
+        return addEventPanel.getVisibility() == View.VISIBLE || addPubPanel.getVisibility() == View.VISIBLE;
     }
 
     private void clearEventList(){
@@ -367,7 +412,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     public void addEventProcessFinished(boolean success) {
         if(success) {
             Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show();
-            slideAddEventPanelUpDown(addEventPanel);
+            slidePanel(addEventPanel);
             clearEventList();
             renderEventList();
         }
