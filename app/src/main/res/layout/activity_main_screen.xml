@@ -213,4 +213,54 @@
 
         </LinearLayout>
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/add_pub_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/x_btn_add_pub_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="X" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dodaj pub:"
+                app:fontFamily="@font/montserrat" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nazwa lokalu:"
+                app:fontFamily="@font/montserrat" />
+
+            <EditText
+                android:id="@+id/input_pub_name"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="np. Piwoteka, Biblioteka..."
+                android:inputType="phone" />
+
+            <!-- insert mapfragment here -->
+
+            <Button
+                android:id="@+id/add_btn_add_pub_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Dodaj" />
+
+
+
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

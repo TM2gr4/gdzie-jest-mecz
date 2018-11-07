@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+
+    <item
+        android:id="@+id/match_list_item"
+        android:title="Dodaj Mecz"/>
+
+    <item
+        android:id="@+id/pub_list_item"
+        android:title="Dodaj Pub"/>
+</menu>
