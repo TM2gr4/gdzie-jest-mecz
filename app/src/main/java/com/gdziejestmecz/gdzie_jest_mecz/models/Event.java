@@ -1,7 +1,5 @@
 package com.gdziejestmecz.gdzie_jest_mecz.models;
 
-import java.util.ArrayList;
-
 public class Event {
     private int id;
     private Match match;

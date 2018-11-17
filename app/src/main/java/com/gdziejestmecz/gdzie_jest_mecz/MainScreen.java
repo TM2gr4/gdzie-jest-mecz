@@ -15,27 +15,33 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.MatchSpinnerListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.PostEvent;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncAddEventListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncEventListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveEvents;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveMatches;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
@@ -57,7 +63,10 @@ import java.util.List;
 
 import java.util.ArrayList;
 
-public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncEventListResponse, AsyncAddEventListResponse {
+public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,
+                                                            AsyncEventListResponse,
+                                                            AsyncAddEventListResponse,
+                                                            AsyncMatchListResponse {
 
     private GoogleMap mMap;
     private TextView userFirstnameLabel, userEmailLabel;
@@ -67,12 +76,15 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private DrawerLayout drawerLayout;
     private NavigationView sideBar;
     private Button plusBtn, menuBtn;
+
     private ArrayList<Event> eventList;
+    private ArrayList<Match> matchList;
 
     private ListView eventsListContent;
 
     private View addEventPanel;
-    private EditText input_matchId, input_pubId, input_desc;
+    private EditText input_pub, input_desc;
+    private Spinner input_match;
     private Button addEventButton;
     private Button closeAddEventPanel;
     private MapViewFragment mapViewFragment;
@@ -97,6 +109,14 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         initGoogleAuth();
 
         renderEventList();
+        getMatches();
+    }
+
+    private void getMatches() {
+        RetrieveMatches retrieveMatches = new RetrieveMatches();
+        retrieveMatches.delegate = this;
+
+        retrieveMatches.execute();
     }
 
 
@@ -168,20 +188,11 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
     private void prepareEventToAdd() {
 
-        int matchId = Integer.parseInt(input_matchId.getText().toString());
-        int pubId = Integer.parseInt(input_pubId.getText().toString());
-        String desc = input_desc.getText().toString();
 
-        Team team = new Team(999, "ZC Bulwy", "https:///Dsada");
-
-        Match match = new Match(matchId, team, team, "2012-12-10", "14:10");
-        Pub pub = new Pub(pubId, "Pod ostryga", "to jest adres");
-        Event event = new Event(999, match, pub, 0, 1.1, 1.1, desc);
-
-        PostEvent postEvent = new PostEvent(event);
-        postEvent.delegate = this;
-
-        postEvent.execute();
+//        PostEvent postEvent = new PostEvent(event);
+//        postEvent.delegate = this;
+//
+//        postEvent.execute();
     }
 
     private void initUIElements() {
@@ -189,20 +200,22 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.sideBar = findViewById(R.id.sideNav);
 
         this.addEventPanel = findViewById(R.id.add_event_panel);
-        this.input_matchId = findViewById(R.id.input_matchId);
-        this.input_pubId = findViewById(R.id.input_pubId);
+        this.input_match = findViewById(R.id.input_match);
+        this.input_pub = findViewById(R.id.input_pub);
         this.input_desc = findViewById(R.id.input_desc);
         this.addEventButton = findViewById(R.id.add_btn_add_event_panel);
         this.closeAddEventPanel = findViewById(R.id.x_btn_add_event_panel);
 
         this.addPubPanel = findViewById(R.id.add_pub_panel);
-        this.input_matchId = findViewById(R.id.input_pub_name);
+        this.input_pub_name = findViewById(R.id.input_pub_name);
         this.addPubButton = findViewById(R.id.add_btn_add_pub_panel);
         this.closeAddPubPanel = findViewById(R.id.x_btn_add_pub_panel);
 
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
+
         this.eventsListContent = findViewById(R.id.eventsListContent);
+        this.input_match = findViewById(R.id.input_match);
 
         View headerLayout = sideBar.getHeaderView(0);
         this.userFirstnameLabel = headerLayout.findViewById(R.id.userFirstnameLabel);
@@ -332,28 +345,15 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     @Override
     public void retrieveEventsProcessFinished(ArrayList<Event> eventList) {
         this.eventList = eventList;
-//        FAKE EVENTS
-        /*eventList = new ArrayList<MatchData>();
-        Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
-        Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
-
-        MatchData match1 = new MatchData(0, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
-        MatchData match2 = new MatchData(1, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
-        MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
-        MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
-
-        eventList.add(match1);
-        eventList.add(match2);
-        eventList.add(match3);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-*/
         eventsListContent.setAdapter(new EventListAdapter(this, this.eventList));
+    }
+
+    @Override
+    public void retrieveMatchesProcessFinished(ArrayList<Match> matchList) {
+        Log.d("[API_CALL]", " Matches retrieve result: " + matchList.toString());
+        this.matchList = matchList;
+
+        input_match.setAdapter(new MatchSpinnerListAdapter(this, this.matchList));
     }
 
     @Override
@@ -414,4 +414,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             renderEventList();
         }
     }
+
+
 }

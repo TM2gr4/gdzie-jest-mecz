@@ -191,12 +191,12 @@
                 android:text="Id meczu:"
                 app:fontFamily="@font/montserrat" />
 
-            <EditText
-                android:id="@+id/input_matchId"
+            <Spinner
+                android:id="@+id/input_match"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint="id meczu..."
-                android:inputType="phone" />
+                />
 
             <TextView
                 android:id="@+id/textView4"
@@ -206,7 +206,7 @@
                 app:fontFamily="@font/montserrat" />
 
             <EditText
-                android:id="@+id/input_pubId"
+                android:id="@+id/input_pub"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:hint="id pubu..."

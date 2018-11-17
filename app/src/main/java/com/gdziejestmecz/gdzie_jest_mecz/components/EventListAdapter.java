@@ -241,7 +241,6 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 
                 if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
                     Log.d("SwipeEvent", "opened left");
-                    //dodajDoObserwowanych()
 
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
