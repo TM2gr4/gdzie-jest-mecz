@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,8 +33,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.PostEvent;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncAddEventListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncEventListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveEvents;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
@@ -56,11 +55,9 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.util.List;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncMatchListResponse, AsyncEventListResponse {
+public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncEventListResponse, AsyncAddEventListResponse {
 
     private GoogleMap mMap;
     private TextView userFirstnameLabel, userEmailLabel;
@@ -333,7 +330,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         eventsListContent.setAdapter(null);
     }
     @Override
-    public void retrieveMatchesProcessFinished(ArrayList<Event> eventList) {
+    public void retrieveEventsProcessFinished(ArrayList<Event> eventList) {
         this.eventList = eventList;
 //        FAKE EVENTS
         /*eventList = new ArrayList<MatchData>();

@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<Event>> {
-    public AsyncMatchListResponse delegate = null;
+    public AsyncEventListResponse delegate = null;
 
     @Override
     protected ArrayList<Event> doInBackground(String... strings) {
@@ -31,7 +31,7 @@ public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<Event>> {
     protected void onPostExecute(ArrayList<Event> eventData) {
         super.onPostExecute(eventData);
         Log.d("API_CALL", "Request DONE");
-        delegate.retrieveMatchesProcessFinished(eventData);
+        delegate.retrieveEventsProcessFinished(eventData);
     }
 
     private Team getTeamById(int id){
