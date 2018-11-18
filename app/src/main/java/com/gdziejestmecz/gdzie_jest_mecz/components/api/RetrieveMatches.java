@@ -4,9 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gdziejestmecz.gdzie_jest_mecz.constants.ServerInfo;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
 
 import org.json.JSONArray;
@@ -21,9 +19,7 @@ public class RetrieveMatches extends AsyncTask<String, Void, ArrayList<Match>> {
 
     @Override
     protected ArrayList<Match> doInBackground(String... strings) {
-
         ArrayList<Match> matches = getMatches();
-
         return matches;
     }
 
@@ -37,11 +33,8 @@ public class RetrieveMatches extends AsyncTask<String, Void, ArrayList<Match>> {
     private ArrayList<Match> getMatches(){
         ArrayList<Match> matches = new ArrayList<Match>();
         try {
-
             String result = Api.get(ServerInfo.getRootUrl() + ServerInfo.getEndpointMatches());
-
-            JSONArray jsonArray;
-            jsonArray = new JSONArray(result);
+            JSONArray jsonArray = new JSONArray(result);
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
@@ -49,14 +42,19 @@ public class RetrieveMatches extends AsyncTask<String, Void, ArrayList<Match>> {
                 String date = obj.getString("date");
                 String time = obj.getString("time");
 
-                Team homeTeam = new Team(obj.getInt("id"), "RKS Chuwdu", "http://dupa.pl");
-                Team awayTeam = new Team(obj.getInt("id"), "JBC Falubas", "http://dupa.pl");
+                JSONObject homeObj = obj.getJSONObject("homeTeam");
+                Team homeTeam = new Team(homeObj.getInt("id"),
+                                    homeObj.getString("name"),
+                            homeObj.getString("imgUrl"), homeObj.getString("countryOfOrigin"));
+
+                JSONObject awayObj = obj.getJSONObject("homeTeam");
+                Team awayTeam = new Team(awayObj.getInt("id"),
+                        awayObj.getString("name"),
+                        awayObj.getString("imgUrl"), awayObj.getString("countryOfOrigin"));
 
                 Match match = new Match(id, homeTeam, awayTeam, date, time);
-
                 matches.add(match);
             }
-
             Log.d("API_CALL", "got matches: " + result);
             return matches;
         }catch(JSONException e) {

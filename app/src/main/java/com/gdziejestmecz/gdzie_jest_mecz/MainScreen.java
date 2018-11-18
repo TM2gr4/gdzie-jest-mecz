@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,18 +33,16 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.MatchListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.components.MatchSpinnerListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.PubSpinnerListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.PostEvent;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncAddEventListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncEventListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveEvents;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncPubListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveMatches;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrievePubs;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -55,7 +52,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -64,11 +60,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,
-                                                            AsyncEventListResponse,
                                                             AsyncAddEventListResponse,
+                                                            AsyncPubListResponse,
                                                             AsyncMatchListResponse {
 
-    private GoogleMap mMap;
     private TextView userFirstnameLabel, userEmailLabel;
     private ImageView userAvatarImageView;
     private GoogleApiClient googleApiClient;
@@ -77,20 +72,19 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private NavigationView sideBar;
     private Button plusBtn, menuBtn;
 
-    private ArrayList<Event> eventList;
     private ArrayList<Match> matchList;
+    private ArrayList<Pub> pubList;
 
-    private ListView eventsListContent;
+    private ListView matchListContent;
 
     private View addEventPanel;
-    private EditText input_pub, input_desc;
-    private Spinner input_match;
+    private EditText input_desc;
+    private Spinner input_match, input_pub;
     private Button addEventButton;
     private Button closeAddEventPanel;
     private MapViewFragment mapViewFragment;
 
     private View addPubPanel;
-    private EditText input_pub_name;
     private Button addPubButton;
     private Button closeAddPubPanel;
 
@@ -108,24 +102,24 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
         initGoogleAuth();
 
-        renderEventList();
-        getMatches();
+        getAndRenderMatches();
+        getPubs();
     }
 
-    private void getMatches() {
+    private void getPubs() {
+        RetrievePubs retrievePubs = new RetrievePubs();
+        retrievePubs.delegate = this;
+
+        retrievePubs.execute();
+    }
+
+    private void getAndRenderMatches() {
         RetrieveMatches retrieveMatches = new RetrieveMatches();
         retrieveMatches.delegate = this;
 
         retrieveMatches.execute();
     }
 
-
-    private void renderEventList() {
-        RetrieveEvents retrieveEvents = new RetrieveEvents();
-        retrieveEvents.delegate = this;
-
-        retrieveEvents.execute();
-    }
 
     private void addEventListeners() {
         plusBtn.setOnClickListener(new View.OnClickListener() {
@@ -150,8 +144,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         });
         menuBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               // Toast.makeText(MainScreen.this, "@string/menu_tapped", Toast.LENGTH_SHORT).show();
-                //drawerLayout.openDrawer(Gravity.LEFT);
                 signOut();
             }
         });
@@ -188,7 +180,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
     private void prepareEventToAdd() {
 
-
 //        PostEvent postEvent = new PostEvent(event);
 //        postEvent.delegate = this;
 //
@@ -207,15 +198,13 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.closeAddEventPanel = findViewById(R.id.x_btn_add_event_panel);
 
         this.addPubPanel = findViewById(R.id.add_pub_panel);
-        this.input_pub_name = findViewById(R.id.input_pub_name);
         this.addPubButton = findViewById(R.id.add_btn_add_pub_panel);
         this.closeAddPubPanel = findViewById(R.id.x_btn_add_pub_panel);
 
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
 
-        this.eventsListContent = findViewById(R.id.eventsListContent);
-        this.input_match = findViewById(R.id.input_match);
+        this.matchListContent = findViewById(R.id.eventsListContent);
 
         View headerLayout = sideBar.getHeaderView(0);
         this.userFirstnameLabel = headerLayout.findViewById(R.id.userFirstnameLabel);
@@ -337,22 +326,15 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         return addEventPanel.getVisibility() == View.VISIBLE || addPubPanel.getVisibility() == View.VISIBLE;
     }
 
-    private void clearEventList(){
-        eventList = new ArrayList<Event>();
-
-        eventsListContent.setAdapter(null);
-    }
-    @Override
-    public void retrieveEventsProcessFinished(ArrayList<Event> eventList) {
-        this.eventList = eventList;
-        eventsListContent.setAdapter(new EventListAdapter(this, this.eventList));
+    private void clearMatchList() {
+        matchListContent.setAdapter(null);
     }
 
     @Override
     public void retrieveMatchesProcessFinished(ArrayList<Match> matchList) {
         Log.d("[API_CALL]", " Matches retrieve result: " + matchList.toString());
         this.matchList = matchList;
-
+        matchListContent.setAdapter(new MatchListAdapter(this, this.matchList));
         input_match.setAdapter(new MatchSpinnerListAdapter(this, this.matchList));
     }
 
@@ -385,7 +367,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                     Geocoder geocoder = new Geocoder(getApplicationContext());
                     try {
                         addressList = geocoder.getFromLocationName(location, 1);
-
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -410,10 +391,14 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         if(success) {
             Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show();
             slidePanel(addEventPanel);
-            clearEventList();
-            renderEventList();
+            clearMatchList();
         }
     }
 
 
+    @Override
+    public void retrievePubsProcessFinished(ArrayList<Pub> pubList) {
+        this.pubList = pubList;
+        input_pub.setAdapter(new PubSpinnerListAdapter(this, this.pubList));
+    }
 }

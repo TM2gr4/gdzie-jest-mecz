@@ -10,6 +10,7 @@ public class ServerInfo {
     private static final String ENDPOINT_EVENTS = "/events";
     private static final String ENDPOINT_MATCHES = "/matches";
     private static final String ENDPOINT_TEAMS = "/teams";
+    private static final String ENDPOINT_PUBS = "/pubs";
 
     private static final String ADD = "/add";
 
@@ -17,6 +18,7 @@ public class ServerInfo {
     public static String getEndpointEvents(){ return ENDPOINT_EVENTS;}
     public static String getEndpointMatches(){ return ENDPOINT_MATCHES;}
     public static String getEndpointTeams(){ return ENDPOINT_TEAMS;}
+    public static String getEndpointPubs(){ return ENDPOINT_PUBS;}
 
     public static String getAdd() {return ADD;}
 }
