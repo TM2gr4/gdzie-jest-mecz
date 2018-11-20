@@ -1,8 +1,10 @@
 package com.gdziejestmecz.gdzie_jest_mecz.components.api;
 
 import android.os.AsyncTask;
+import android.support.design.widget.NavigationView;
 import android.util.Log;
 
+import com.gdziejestmecz.gdzie_jest_mecz.MainScreen;
 import com.gdziejestmecz.gdzie_jest_mecz.constants.ServerInfo;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
@@ -17,7 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<Event>> {
-    public AsyncMatchListResponse delegate = null;
+    public MainScreen delegate = null;
 
     @Override
     protected ArrayList<Event> doInBackground(String... strings) {
