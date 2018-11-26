@@ -17,6 +17,7 @@
         android:id="@+id/subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:fontFamily="@font/montserrat"
         android:text="Znajdz transmisje meczu w Twojej okolicy!"
         android:textAlignment="center"
@@ -62,14 +63,6 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/google_sing_in_button" />
 
-    <ImageView
-        android:id="@+id/btn_fb"
-        android:layout_width="279dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/fb_sing_in_button" />
-
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -78,8 +71,8 @@
         android:layout_weight="1"
         android:fontFamily="@font/montserrat"
         android:gravity="bottom"
-        android:text="ChoNaMecz Team 2018 \n Wszelkie prawa zastrzeżone"
         android:textAlignment="center"
+        android:text="ChoNaMecz Team 2018 \n Wszelkie prawa zastrzeżone"
         android:textColor="#C3c3c3" />
 
 </LinearLayout>
