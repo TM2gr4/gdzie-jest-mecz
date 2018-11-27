@@ -18,8 +18,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -32,10 +30,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.support.design.widget.NavigationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.EventListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.PostEvent;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncEventListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
@@ -59,9 +56,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.io.IOException;
 import java.util.List;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncMatchListResponse, AsyncEventListResponse, NavigationView.OnNavigationItemSelectedListener {
 
@@ -304,16 +299,14 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     public void slidePanel(final View view) {
         if (!isAddEventPanelShown()) {
             // Show the panel
-            Animation bottomUp = AnimationUtils.loadAnimation(this,
-                    R.anim.up_slide);
+            Animation bottomUp = AnimationUtils.loadAnimation(this, R.anim.up_slide);
 
             view.startAnimation(bottomUp);
             view.setVisibility(View.VISIBLE);
         }
         else {
             // Hide the Panel
-            Animation bottomDown = AnimationUtils.loadAnimation(this,
-                    R.anim.bottom_slide);
+            Animation bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_slide);
 
             view.startAnimation(bottomDown);
             view.setVisibility(View.GONE);
@@ -331,28 +324,25 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
     @Override
     public void retrieveMatchesProcessFinished(ArrayList<Event> eventList) {
-        this.eventList = eventList;
+//        this.eventList = eventList;
+
 //        FAKE EVENTS
-        /*eventList = new ArrayList<MatchData>();
+        eventList = new ArrayList<Event>();
         Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
         Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
 
-        MatchData match1 = new MatchData(0, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
-        MatchData match2 = new MatchData(1, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
-        MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
-        MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
+        Match match = new Match(0, sampleHomeTeam, sampleAwayTeam, "2018-03-19", "19:30");
+        Pub pub = new Pub(0, "Chmielowa Dolina", "Piotrkowska 127");
 
+        Event match1 = new Event(0, match, pub, 0, 0.0, 0.0, "Piwsko");
         eventList.add(match1);
-        eventList.add(match2);
-        eventList.add(match3);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-*/
+        eventList.add(match1);
+        eventList.add(match1);
+        eventList.add(match1);
+        eventList.add(match1);
+        eventList.add(match1);
+        eventList.add(match1);
+        this.eventList = eventList;
         eventsListContent.setAdapter(new EventListAdapter(this, this.eventList));
     }
 
