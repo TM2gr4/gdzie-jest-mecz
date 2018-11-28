@@ -19,6 +19,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.gdziejestmecz.gdzie_jest_mecz.R;
 import com.gdziejestmecz.gdzie_jest_mecz.constants.Colors;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.DownloadImageTask;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,16 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         String time = event.getMatch().getTime();
         holder.getDateText().setText(date);
         holder.getTimeText().setText(time);
-        holder.getTeamsLabel().setText(event.getMatch().getHomeTeam().getName() + " - " + event.getMatch().getAwayTeam().getName());
+        holder.getHomeTeamLabel().setText(event.getMatch().getHomeTeam().getName());
+        holder.getAwayTeamLabel().setText(event.getMatch().getAwayTeam().getName());
+
+        new DownloadImageTask((ImageView) convertView.findViewById(R.id.home_team_logo))
+                //.execute(event.getMatch().getHomeTeam().getLogoURL());
+                .execute("http://www.stare.zaglebie.com/sites/default/files/imce/zielonagora.png");
+
+        new DownloadImageTask((ImageView) convertView.findViewById(R.id.away_team_logo))
+//                .execute(event.getMatch().getAwayTeam().getLogoURL());
+                    .execute("https://upload.wikimedia.org/wikipedia/sco/thumb/0/0c/Liverpool_FC.svg/758px-Liverpool_FC.svg.png");
 //        LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
 //        SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);
 //        TextView swipeActionLabel = (TextView) convertView.findViewById(R.id.swipe_action_label);

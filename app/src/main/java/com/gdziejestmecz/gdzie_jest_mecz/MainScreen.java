@@ -33,10 +33,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.EventListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.PostEvent;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncEventListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveEvents;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.PostEvent;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncEventListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncMatchListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrieveEvents;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
@@ -93,8 +93,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, R.string.open, R.string.closed);
@@ -105,11 +103,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         navigationView.setNavigationItemSelectedListener(this);
         initUIElements();
         addEventListeners();
-
         initGoogleAuth();
-
         renderEventList();
-
     }
 
 
@@ -282,7 +277,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
 
     private void signOut() {
-
         Auth.GoogleSignInApi.signOut(googleApiClient)
                 .setResultCallback(new ResultCallback<Status>() {
                     @Override
@@ -324,25 +318,27 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
     @Override
     public void retrieveMatchesProcessFinished(ArrayList<Event> eventList) {
-//        this.eventList = eventList;
-
-//        FAKE EVENTS
-        eventList = new ArrayList<Event>();
-        Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
-        Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
-
-        Match match = new Match(0, sampleHomeTeam, sampleAwayTeam, "2018-03-19", "19:30");
-        Pub pub = new Pub(0, "Chmielowa Dolina", "Piotrkowska 127");
-
-        Event match1 = new Event(0, match, pub, 0, 0.0, 0.0, "Piwsko");
-        eventList.add(match1);
-        eventList.add(match1);
-        eventList.add(match1);
-        eventList.add(match1);
-        eventList.add(match1);
-        eventList.add(match1);
-        eventList.add(match1);
         this.eventList = eventList;
+
+        /********FAKE EVENTS - USE WHEN API/SERVER FUCKS UP***********/
+//        eventList = new ArrayList<Event>();
+//        Team sampleHomeTeam = new Team(0, "RKS Offline Football CLub", "httpsDupa:///");
+//        Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
+//
+//        Match match = new Match(0, sampleHomeTeam, sampleAwayTeam, "2018-03-19", "19:30");
+//        Pub pub = new Pub(0, "Chmielowa Dolina", "Piotrkowska 127");
+//
+//        Event match1 = new Event(0, match, pub, 0, 0.0, 0.0, "Piwsko");
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        this.eventList = eventList;
+        /******************************/
+
         eventsListContent.setAdapter(new EventListAdapter(this, this.eventList));
     }
 

@@ -1,4 +1,4 @@
-package com.gdziejestmecz.gdzie_jest_mecz.components.api;
+package com.gdziejestmecz.gdzie_jest_mecz.utils.api;
 
 import android.os.AsyncTask;
 import android.util.Log;

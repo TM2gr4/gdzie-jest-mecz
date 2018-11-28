@@ -1,7 +1,6 @@
-package com.gdziejestmecz.gdzie_jest_mecz.components.api;
+package com.gdziejestmecz.gdzie_jest_mecz.utils.api;
 
 import android.os.AsyncTask;
-import android.support.design.widget.NavigationView;
 import android.util.Log;
 
 import com.gdziejestmecz.gdzie_jest_mecz.MainScreen;
@@ -59,7 +58,7 @@ public class RetrieveEvents extends AsyncTask<String, Void, ArrayList<Event>> {
 
         try {
 
-            String result = Api.get(ServerInfo.getRootUrl() + ServerInfo.getEndpointEvents());
+            String result = Api.get(ServerInfo.getRootUrl() + ServerInfo.getEndpointMatches());
 
             JSONArray jsonArray;
             jsonArray = new JSONArray(result);

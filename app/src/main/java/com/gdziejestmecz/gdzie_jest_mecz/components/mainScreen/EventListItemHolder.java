@@ -1,6 +1,7 @@
 package com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gdziejestmecz.gdzie_jest_mecz.R;
@@ -9,7 +10,10 @@ public class EventListItemHolder {
     private View row;
     private TextView dateText = null,
             timeText = null,
-            teamsLabel = null;
+            homeTeamLabel = null,
+            awayTeamLabel = null;
+    private ImageView homeTeamLogo = null,
+                        awayTeamLogo = null;
 
     public EventListItemHolder(View row) {
         this.row = row;
@@ -29,10 +33,31 @@ public class EventListItemHolder {
         return this.timeText;
     }
 
-    public TextView getTeamsLabel() {
-        if (this.teamsLabel == null) {
-            this.teamsLabel = (TextView) row.findViewById(R.id.teams_label);
+    public TextView getHomeTeamLabel() {
+        if (this.homeTeamLabel == null) {
+            this.homeTeamLabel = (TextView) row.findViewById(R.id.home_team_label);
         }
-        return this.teamsLabel;
+        return this.homeTeamLabel;
+    }
+
+    public TextView getAwayTeamLabel() {
+        if (this.awayTeamLabel == null) {
+            this.awayTeamLabel = (TextView) row.findViewById(R.id.away_team_label);
+        }
+        return this.awayTeamLabel;
+    }
+
+    public ImageView getHomeTeamLogo() {
+        if (this.homeTeamLogo == null) {
+            this.homeTeamLogo = (ImageView) row.findViewById(R.id.home_team_logo);
+        }
+        return this.homeTeamLogo;
+    }
+
+    public ImageView getAwayTeamLogo() {
+        if (this.awayTeamLogo == null) {
+            this.awayTeamLogo = (ImageView) row.findViewById(R.id.away_team_logo);
+        }
+        return this.awayTeamLogo;
     }
 }
