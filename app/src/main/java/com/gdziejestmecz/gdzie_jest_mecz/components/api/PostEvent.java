@@ -6,7 +6,7 @@ import android.util.Log;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
 
 public class PostEvent extends AsyncTask<String, Void, Boolean> {
-    public AsyncEventListResponse delegate = null;
+    public AsyncAddEventListResponse delegate = null;
     private Event event;
 
     public PostEvent(Event event) {

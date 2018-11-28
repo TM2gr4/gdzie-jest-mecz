@@ -17,25 +17,24 @@ import android.widget.TextView;
 import com.daimajia.swipe.SwipeLayout;
 import com.gdziejestmecz.gdzie_jest_mecz.R;
 import com.gdziejestmecz.gdzie_jest_mecz.constants.Colors;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 
 import java.util.ArrayList;
 
-public class EventListAdapter extends ArrayAdapter<Event> {
+public class MatchListAdapter extends ArrayAdapter<Match> {
     private Context context;
-    private ArrayList<Event> eventList;
+    private ArrayList<Match> matchList;
 
-    public EventListAdapter(Context context, ArrayList<Event> data) {
+    public MatchListAdapter(Context context, ArrayList<Match> data) {
         super(context, -1, -1, data);
         this.context = context;
-        this.eventList = data;
+        this.matchList = data;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if(eventList.size() == 0){
+        if(matchList.size() == 0){
             LinearLayout LLlistMainWrapper = new LinearLayout(context);
             LinearLayout.LayoutParams defaultLLparams = new LinearLayout.LayoutParams
                     (LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -59,7 +58,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 
         LLlistMainWrapper.setLayoutParams(defaultLLparams);
 
-        Match match = super.getItem(position).getMatch();
+        Match match = super.getItem(position);
 
         if (match == null) {
             TextView errorTextView = new TextView(context);
@@ -155,11 +154,13 @@ public class EventListAdapter extends ArrayAdapter<Event> {
         LinearLayout.LayoutParams logoConstraints = new LinearLayout.LayoutParams(100, LinearLayout.LayoutParams.MATCH_PARENT);
         teamOneLogo.setLayoutParams(logoConstraints);
 
-        teamOneLogo.setBackgroundResource(R.drawable.lfc_logo);
-
-        ImageView teamTwoLogo = new ImageView(context);
+        new DownloadImageTask(teamOneLogo)
+                .execute(match.getHomeTeam().getLogoURL());
+                ImageView teamTwoLogo = new ImageView(context);
         teamTwoLogo.setLayoutParams(logoConstraints);
-        teamTwoLogo.setBackgroundResource(R.drawable.logo_real_madryt);
+
+        new DownloadImageTask(teamTwoLogo)
+                .execute(match.getAwayTeam().getLogoURL());
 
         TextView teams = new TextView(context);
         teams.setText(match.getHomeTeam().getName()+ " - " + match.getAwayTeam().getName());
@@ -230,7 +231,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
                 } else {
                     Log.d("SwipeEvent", "dragged right");
                     background.setBackgroundColor(Color.RED);
-                    swipeActionLabel.setText("Usunięty");
+                    swipeActionLabel.setText("Zignorowano");
                     icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_forever_white_48dp));
                 }
             }
@@ -241,7 +242,6 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 
                 if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
                     Log.d("SwipeEvent", "opened left");
-                    //dodajDoObserwowanych()
 
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -249,7 +249,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
                         public void run() {
                             layout.close(true);
                         }
-                    }, 1000);
+                    }, 300);
                 } else {
                     Log.d("SwipeEvent", "opened right");
 
@@ -259,7 +259,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
                         public void run() {
                             deleteEvent(position);
                         }
-                    }, 500);
+                    }, 300);
                 }
             }
 
@@ -276,9 +276,8 @@ public class EventListAdapter extends ArrayAdapter<Event> {
     }
 
     private void deleteEvent(int itemId){
-        eventList.remove(itemId);
+        matchList.remove(itemId);
         Log.d("EventAction", "removed " + itemId);
-
         refreshEventList();
     }
 

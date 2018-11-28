@@ -18,6 +18,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,21 +30,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import android.support.design.widget.NavigationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.gdziejestmecz.gdzie_jest_mecz.components.EventListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.PostEvent;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncEventListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.components.MatchListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.MatchSpinnerListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.PubSpinnerListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveEvents;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncAddEventListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncPubListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveMatches;
+import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrievePubs;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -53,19 +56,19 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
 import java.util.List;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener, AsyncMatchListResponse, AsyncEventListResponse, NavigationView.OnNavigationItemSelectedListener {
+public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,
+                                                            AsyncAddEventListResponse,
+                                                            AsyncPubListResponse,
+                                                            AsyncMatchListResponse,
+                                                            NavigationView.OnNavigationItemSelectedListener{
 
-    private GoogleMap mMap;
     private TextView userFirstnameLabel, userEmailLabel;
     private ImageView userAvatarImageView;
     private GoogleApiClient googleApiClient;
@@ -73,19 +76,21 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private DrawerLayout drawer_layout;
     private NavigationView sideBar;
     private Button plusBtn, menuBtn;
-    private ArrayList<Event> eventList;
     private ActionBarDrawerToggle mToogle;
 
-    private ListView eventsListContent;
+    private ArrayList<Match> matchList;
+    private ArrayList<Pub> pubList;
+
+    private ListView matchListContent;
 
     private View addEventPanel;
-    private EditText input_matchId, input_pubId, input_desc;
+    private EditText input_desc;
+    private Spinner input_match, input_pub;
     private Button addEventButton;
     private Button closeAddEventPanel;
     private MapViewFragment mapViewFragment;
 
     private View addPubPanel;
-    private EditText input_pub_name;
     private Button addPubButton;
     private Button closeAddPubPanel;
 
@@ -113,17 +118,24 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
         initGoogleAuth();
 
-        renderEventList();
-
+        getAndRenderMatches();
+        getPubs();
     }
 
+    private void getPubs() {
+        RetrievePubs retrievePubs = new RetrievePubs();
+        retrievePubs.delegate = this;
 
-    private void renderEventList() {
-        RetrieveEvents retrieveEvents = new RetrieveEvents();
-        retrieveEvents.delegate = this;
-
-        retrieveEvents.execute();
+        retrievePubs.execute();
     }
+
+    private void getAndRenderMatches() {
+        RetrieveMatches retrieveMatches = new RetrieveMatches();
+        retrieveMatches.delegate = this;
+
+        retrieveMatches.execute();
+    }
+
 
     private void addEventListeners() {
         plusBtn.setOnClickListener(new View.OnClickListener() {
@@ -185,20 +197,10 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
     private void prepareEventToAdd() {
 
-        int matchId = Integer.parseInt(input_matchId.getText().toString());
-        int pubId = Integer.parseInt(input_pubId.getText().toString());
-        String desc = input_desc.getText().toString();
-
-        Team team = new Team(999, "ZC Bulwy", "https:///Dsada");
-
-        Match match = new Match(matchId, team, team, "2012-12-10", "14:10");
-        Pub pub = new Pub(pubId, "Pod ostryga", "to jest adres");
-        Event event = new Event(999, match, pub, 0, 1.1, 1.1, desc);
-
-        PostEvent postEvent = new PostEvent(event);
-        postEvent.delegate = this;
-
-        postEvent.execute();
+//        PostEvent postEvent = new PostEvent(event);
+//        postEvent.delegate = this;
+//
+//        postEvent.execute();
     }
 
     private void initUIElements() {
@@ -206,21 +208,21 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.sideBar = findViewById(R.id.nav_view);
 
         this.addEventPanel = findViewById(R.id.add_event_panel);
-        this.input_matchId = findViewById(R.id.input_matchId);
-        this.input_pubId = findViewById(R.id.input_pubId);
+        this.input_match = findViewById(R.id.input_match);
+        this.input_pub = findViewById(R.id.input_pub);
         this.input_desc = findViewById(R.id.input_desc);
         this.addEventButton = findViewById(R.id.add_btn_add_event_panel);
         this.closeAddEventPanel = findViewById(R.id.x_btn_add_event_panel);
 
         this.addPubPanel = findViewById(R.id.add_pub_panel);
-        this.input_matchId = findViewById(R.id.input_pub_name);
         this.addPubButton = findViewById(R.id.add_btn_add_pub_panel);
         this.closeAddPubPanel = findViewById(R.id.x_btn_add_pub_panel);
 
 
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
-        this.eventsListContent = findViewById(R.id.eventsListContent);
+
+        this.matchListContent = findViewById(R.id.eventsListContent);
 
         View headerLayout = sideBar.getHeaderView(0);
         this.userFirstnameLabel = headerLayout.findViewById(R.id.userFirstnameLabel);
@@ -324,36 +326,16 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         return addEventPanel.getVisibility() == View.VISIBLE || addPubPanel.getVisibility() == View.VISIBLE;
     }
 
-    private void clearEventList(){
-        eventList = new ArrayList<Event>();
-
-        eventsListContent.setAdapter(null);
+    private void clearMatchList() {
+        matchListContent.setAdapter(null);
     }
+
     @Override
-    public void retrieveMatchesProcessFinished(ArrayList<Event> eventList) {
-        this.eventList = eventList;
-//        FAKE EVENTS
-        /*eventList = new ArrayList<MatchData>();
-        Team sampleHomeTeam = new Team(0, "RKS Offline", "httpsDupa:///");
-        Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
-
-        MatchData match1 = new MatchData(0, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
-        MatchData match2 = new MatchData(1, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
-        MatchData match3 = new MatchData(2, sampleHomeTeam, sampleAwayTeam, "12-10-2018", "12:10");
-        MatchData match4 = new MatchData(3, sampleAwayTeam, sampleHomeTeam, "12-10-2018", "12:10");
-
-        eventList.add(match1);
-        eventList.add(match2);
-        eventList.add(match3);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-        eventList.add(match4);
-*/
-        eventsListContent.setAdapter(new EventListAdapter(this, this.eventList));
+    public void retrieveMatchesProcessFinished(ArrayList<Match> matchList) {
+        Log.d("[API_CALL]", " Matches retrieve result: " + matchList.toString());
+        this.matchList = matchList;
+        matchListContent.setAdapter(new MatchListAdapter(this, this.matchList));
+        input_match.setAdapter(new MatchSpinnerListAdapter(this, this.matchList));
     }
 
     @Override
@@ -385,7 +367,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                     Geocoder geocoder = new Geocoder(getApplicationContext());
                     try {
                         addressList = geocoder.getFromLocationName(location, 1);
-
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -410,9 +391,15 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         if(success) {
             Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show();
             slidePanel(addEventPanel);
-            clearEventList();
-            renderEventList();
+            clearMatchList();
         }
+    }
+
+
+    @Override
+    public void retrievePubsProcessFinished(ArrayList<Pub> pubList) {
+        this.pubList = pubList;
+        input_pub.setAdapter(new PubSpinnerListAdapter(this, this.pubList));
     }
     @Override
     public void onBackPressed() {
