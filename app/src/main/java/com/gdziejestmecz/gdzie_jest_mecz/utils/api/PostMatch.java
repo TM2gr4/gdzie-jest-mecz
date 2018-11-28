@@ -3,25 +3,25 @@ package com.gdziejestmecz.gdzie_jest_mecz.utils.api;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 
-public class PostEvent extends AsyncTask<String, Void, Boolean> {
-    public AsyncEventListResponse delegate = null;
-    private Event event;
+public class PostMatch extends AsyncTask<String, Void, Boolean> {
+    public AsyncAddPostListResponse delegate = null;
+    private Match match;
 
-    public PostEvent(Event event) {
-        this.event = event;
+    public PostMatch(Match match) {
+        this.match = match;
     }
     @Override
     protected Boolean doInBackground(String... strings) {
-        return Api.postEvent(event);
+        return Api.postMatch(match);
     }
 
     @Override
     protected void onPostExecute(Boolean success) {
         super.onPostExecute(success);
         Log.d("API_CALL", "Request DONE");
-        delegate.addEventProcessFinished(success);
+        delegate.addMatchProcessFinished(success);
     }
 
 }

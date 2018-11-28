@@ -3,7 +3,7 @@ package com.gdziejestmecz.gdzie_jest_mecz.utils.api;
 import android.util.Log;
 
 import com.gdziejestmecz.gdzie_jest_mecz.constants.ServerInfo;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -29,16 +28,18 @@ public class Api {
         return response.body().string();
     }
 
-    public static boolean postEvent(Event event) {
+    public static boolean postMatch(Match match) {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("description", event.getDescription());
-            jsonObject.put("latitude", Double.toString(event.getLatiitude()));
-            jsonObject.put("longitude", Double.toString(event.getLongitude()));
-            jsonObject.put("matchId", Integer.toString(event.getMatch().getId()));
-            jsonObject.put("numberOfAttendees", Integer.toString(event.getNumberOfAttendees()));
-            jsonObject.put("pubId", Integer.toString(event.getPub().getId()));
+//            jsonObject.put("description", match.getDescription());
+            jsonObject.put("id", Integer.toString(match.getId()));
+//            jsonObject.put("longitude", Double.toString(match.getLongitude()));
+//            jsonObject.put("matchId", Integer.toString(match.getMatch().getId()));
+//            jsonObject.put("numberOfAttendees", Integer.toString(match.getNumberOfAttendees()));
+//            jsonObject.put("pubId", Integer.toString(match.getPub().getId()));
+//            jsonObject.put("pubId", Integer.toString(match.getPubs().getId()));
+
         }catch (JSONException e){
             Log.e("JSON", "Couldn't create json out of envt object. " + e.getMessage());
             return false;
@@ -47,7 +48,7 @@ public class Api {
         RequestBody body = RequestBody.create(JSON, jsonObject.toString());
 
         Request request = new Request.Builder()
-                .url(ServerInfo.getRootUrl() + ServerInfo.getEndpointEvents() + ServerInfo.getAdd())
+                .url(ServerInfo.getRootUrl() + ServerInfo.getEndpointMatches() + ServerInfo.getAdd())
                 .post(body)
                 .build();
         try {
@@ -56,12 +57,12 @@ public class Api {
             if (response.code() == 201 || response.code() == 200) {
                 return true;
             } else {
-                Log.e("API_CALL", "POSTING EVENT FAILED!!! BEACUSE response status code : " + response.code());
+                Log.e("API_CALL", "POSTING MATCH FAILED!!! BEACUSE response status code : " + response.code());
                 return false;
             }
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d("API_CALL", "POSTING EVENT FAILED!!! BEACUSE: " + e.getMessage());
+            Log.d("API_CALL", "POSTING MATCH FAILED!!! BEACUSE: " + e.getMessage());
             return false;
         }
     }

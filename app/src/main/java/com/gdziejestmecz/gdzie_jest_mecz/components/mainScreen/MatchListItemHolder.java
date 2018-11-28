@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.gdziejestmecz.gdzie_jest_mecz.R;
 
-public class EventListItemHolder {
+public class MatchListItemHolder {
     private View row;
     private TextView dateText = null,
             timeText = null,
@@ -15,7 +15,7 @@ public class EventListItemHolder {
     private ImageView homeTeamLogo = null,
                         awayTeamLogo = null;
 
-    public EventListItemHolder(View row) {
+    public MatchListItemHolder(View row) {
         this.row = row;
     }
 

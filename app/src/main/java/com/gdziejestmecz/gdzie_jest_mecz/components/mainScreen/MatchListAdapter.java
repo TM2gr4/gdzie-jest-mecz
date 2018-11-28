@@ -4,71 +4,76 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
 import com.gdziejestmecz.gdzie_jest_mecz.R;
 import com.gdziejestmecz.gdzie_jest_mecz.constants.Colors;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Event;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.DownloadImageTask;
 
 import java.util.ArrayList;
 
-public class EventListAdapter extends ArrayAdapter<Event> {
+public class MatchListAdapter extends ArrayAdapter<Match> {
     private Context context;
-    private ArrayList<Event> eventList;
+    private ArrayList<Match> matchList;
+    private SwipeLayout swipeLayout;
+    private ImageView icoBox;
 
-    public EventListAdapter(Context context, ArrayList<Event> data) {
+    public MatchListAdapter(Context context, ArrayList<Match> data) {
         super(context, R.layout.event_list_row, R.id.event_list_row, data);
         this.context = context;
-        this.eventList = data;
+        this.matchList = data;
+        this.swipeLayout = swipeLayout;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        EventListItemHolder holder = null;
+        MatchListItemHolder holder = null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.event_list_row, null, false);
-            holder = new EventListItemHolder(convertView);
+            holder = new MatchListItemHolder(convertView);
             convertView.setTag(holder);
         } else {
-            holder = (EventListItemHolder) convertView.getTag();
+            holder = (MatchListItemHolder) convertView.getTag();
         }
 
-        Event event = eventList.get(position);
-        String date = event.getMatch().getDate().split("-")[1] + ":" + event.getMatch().getDate().split("-")[2];
-        String time = event.getMatch().getTime();
+        Match match = matchList.get(position);
+        String date = match.getDate().split("-")[2] + "." + match.getDate().split("-")[1];
+        String time = match.getTime().split(":")[0] + ":" + match.getTime().split(":")[1];
         holder.getDateText().setText(date);
         holder.getTimeText().setText(time);
-        holder.getHomeTeamLabel().setText(event.getMatch().getHomeTeam().getName());
-        holder.getAwayTeamLabel().setText(event.getMatch().getAwayTeam().getName());
+        holder.getHomeTeamLabel().setText(match.getHomeTeam().getName());
+        holder.getAwayTeamLabel().setText(match.getAwayTeam().getName());
 
         new DownloadImageTask((ImageView) convertView.findViewById(R.id.home_team_logo))
-                //.execute(event.getMatch().getHomeTeam().getLogoURL());
-                .execute("http://www.stare.zaglebie.com/sites/default/files/imce/zielonagora.png");
+                .execute(match.getHomeTeam().getLogoURL());
 
         new DownloadImageTask((ImageView) convertView.findViewById(R.id.away_team_logo))
-//                .execute(event.getMatch().getAwayTeam().getLogoURL());
-                    .execute("https://upload.wikimedia.org/wikipedia/sco/thumb/0/0c/Liverpool_FC.svg/758px-Liverpool_FC.svg.png");
-//        LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
-//        SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);
-//        TextView swipeActionLabel = (TextView) convertView.findViewById(R.id.swipe_action_label);
-//        handleSwipeAction(position, swipeLayout, swipeBackground, swipeActionLabel);
+                .execute(match.getAwayTeam().getLogoURL());
+
+
+        LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
+        SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);
+        TextView swipeActionLabel = (TextView) convertView.findViewById(R.id.swipe_action_label);
+        ImageView icoBox = (ImageView) convertView.findViewById(R.id.ico_box);
+        handleSwipeAction(position, swipeLayout, swipeBackground, swipeActionLabel, icoBox);
+
         return convertView;
     }
 
-    private void handleSwipeAction(final int position, final SwipeLayout swipeLayout, final LinearLayout swipeBackground, final TextView swipeActionLabel) {
+    private void handleSwipeAction(final int position, final SwipeLayout swipeLayout, final LinearLayout swipeBackground, final TextView swipeActionLabel, final ImageView icoBox) {
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         swipeLayout.addDrag(SwipeLayout.DragEdge.Left, swipeBackground);
 
@@ -89,13 +94,13 @@ public class EventListAdapter extends ArrayAdapter<Event> {
                     Log.d("SwipeEvent", "dragged left");
                     swipeBackground.setBackgroundColor(Colors.lapisBlue);
                     swipeActionLabel.setText("Dodano do obserwowanych");
-//                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_border_white_48dp));
+                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_border_white_48dp));
 
                 } else {
                     Log.d("SwipeEvent", "dragged right");
                     swipeBackground.setBackgroundColor(Color.RED);
                     swipeActionLabel.setText("Usunięty");
-//                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_forever_white_48dp));
+                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_forever_white_48dp));
                 }
             }
 
@@ -211,9 +216,12 @@ public class EventListAdapter extends ArrayAdapter<Event> {
     }
 
     private void deleteEvent(int itemId){
-        eventList.remove(itemId);
-        Log.d("EventAction", "removed " + itemId);
-
+        try {
+            matchList.remove(itemId);
+            Log.d("EventAction", "removed " + itemId);
+        } catch(Exception e) {
+            Toast.makeText(context, "Blad! Spróbuj później", Toast.LENGTH_SHORT).show();
+        }
         refreshEventList();
     }
 

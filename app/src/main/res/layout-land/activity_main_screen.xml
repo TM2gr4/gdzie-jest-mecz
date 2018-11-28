@@ -121,56 +121,33 @@
                     android:gravity="bottom"
                     android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/eventListHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/closestEventsLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:text="@string/closest_events"
-                        android:textColor="@color/blackyBlack"
-                        android:textSize="18sp"
-                        app:fontFamily="@font/montserrat"
-                        tools:textColor="@color/blackyBlack" />
-
                     <LinearLayout
-                        android:id="@+id/eventListHeaderRight"
+                        android:id="@+id/eventListHeader"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:orientation="horizontal">
 
-                        <ImageView
-                            android:id="@+id/sortingIcon"
-                            android:layout_width="10dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/boneWhite" />
-
                         <TextView
-                            android:id="@+id/sortingLabel"
+                            android:id="@+id/closestEventsLabel"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="right"
-                            android:text="@string/sorting_label"
-                            android:textSize="15sp"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:text="@string/closest_events"
+                            android:textColor="@color/blackyBlack"
+                            android:textSize="18sp"
                             app:fontFamily="@font/montserrat"
-                            tools:textColor="@color/lightGray" />
+                            tools:textColor="@color/blackyBlack" />
+
                     </LinearLayout>
-                </LinearLayout>
 
-                <ListView
-                    android:id="@+id/eventsListContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    <ListView
+                        android:id="@+id/matchListContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
 
-                </ListView>
+                    </ListView>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -182,7 +159,7 @@
 
 
         <RelativeLayout
-            android:id="@+id/add_event_panel"
+            android:id="@+id/add_match_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
@@ -193,7 +170,7 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <Button
-                    android:id="@+id/x_btn_add_event_panel"
+                    android:id="@+id/x_btn_add_match_panel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -245,7 +222,7 @@
                     android:layout_height="wrap_content"
                     android:hint="darmowe piwko?..."/>
                 <Button
-                    android:id="@+id/add_btn_add_event_panel"
+                    android:id="@+id/add_btn_add_match_panel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
