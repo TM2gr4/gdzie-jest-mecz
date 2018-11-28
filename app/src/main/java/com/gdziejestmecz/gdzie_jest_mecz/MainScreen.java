@@ -14,7 +14,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.Gravity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.support.design.widget.NavigationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.MatchListAdapter;
@@ -62,15 +66,17 @@ import java.util.ArrayList;
 public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,
                                                             AsyncAddEventListResponse,
                                                             AsyncPubListResponse,
-                                                            AsyncMatchListResponse {
+                                                            AsyncMatchListResponse,
+                                                            NavigationView.OnNavigationItemSelectedListener{
 
     private TextView userFirstnameLabel, userEmailLabel;
     private ImageView userAvatarImageView;
     private GoogleApiClient googleApiClient;
 
-    private DrawerLayout drawerLayout;
+    private DrawerLayout drawer_layout;
     private NavigationView sideBar;
     private Button plusBtn, menuBtn;
+    private ActionBarDrawerToggle mToogle;
 
     private ArrayList<Match> matchList;
     private ArrayList<Pub> pubList;
@@ -97,6 +103,16 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
+
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, R.string.open, R.string.closed);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         initUIElements();
         addEventListeners();
 
@@ -144,7 +160,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         });
         menuBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                signOut();
+               // Toast.makeText(MainScreen.this, "@string/menu_tapped", Toast.LENGTH_SHORT).show();
+                drawer_layout.openDrawer(Gravity.LEFT);
             }
         });
 
@@ -187,8 +204,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
 
     private void initUIElements() {
-        this.drawerLayout = findViewById(R.id.drawerLayout);
-        this.sideBar = findViewById(R.id.sideNav);
+        this.drawer_layout = findViewById(R.id.drawer_layout);
+        this.sideBar = findViewById(R.id.nav_view);
 
         this.addEventPanel = findViewById(R.id.add_event_panel);
         this.input_match = findViewById(R.id.input_match);
@@ -200,6 +217,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.addPubPanel = findViewById(R.id.add_pub_panel);
         this.addPubButton = findViewById(R.id.add_btn_add_pub_panel);
         this.closeAddPubPanel = findViewById(R.id.x_btn_add_pub_panel);
+
 
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
@@ -268,24 +286,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.side_view, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sign_out_label:
-                signOut();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     private void signOut() {
@@ -400,5 +400,34 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     public void retrievePubsProcessFinished(ArrayList<Pub> pubList) {
         this.pubList = pubList;
         input_pub.setAdapter(new PubSpinnerListAdapter(this, this.pubList));
+    }
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.sign_out_label) {
+            signOut();
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }

@@ -8,4 +8,6 @@
     <string name="plus_sign">+</string>
     <string name="search_button">Szukaj</string>
     <string name="search_hint">Szukaj Lokacji</string>
+    <string name="open">Open</string>
+    <string name="closed">Closed</string>
 </resources>
