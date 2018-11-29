@@ -1,4 +1,4 @@
-package com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen;
+package com.gdziejestmecz.gdzie_jest_mecz.components.watchedMatchesScreen;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -6,9 +6,7 @@ import android.widget.TextView;
 
 import com.gdziejestmecz.gdzie_jest_mecz.R;
 
-import org.w3c.dom.Text;
-
-public class MatchListItemHolder {
+public class WatchedMatchesListItemHolder {
     private View row;
     private TextView dateText = null,
             timeText = null,
@@ -18,7 +16,7 @@ public class MatchListItemHolder {
     private ImageView homeTeamLogo = null,
                         awayTeamLogo = null;
 
-    public MatchListItemHolder(View row) {
+    public WatchedMatchesListItemHolder(View row) {
         this.row = row;
     }
 

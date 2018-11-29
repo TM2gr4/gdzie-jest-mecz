@@ -34,7 +34,7 @@
             android:label="@string/title_activity_main_screen">
 
         </activity>
-
+        <activity android:name=".WatchedMatchesScreen"></activity>
         <activity
             android:name=".SignInScreen"
             android:label="SigninScreen">

@@ -34,11 +34,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.gdziejestmecz.gdzie_jest_mecz.components.MatchSpinnerListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.components.PubSpinnerListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncPubListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveMatches;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrievePubs;
+import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchSpinnerListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.PubSpinnerListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPubListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrieveMatches;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrievePubs;
 import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncMatchListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
@@ -421,11 +421,10 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
+        if (id == R.id.watched_matches_screen_label) {
+            Intent myIntent = new Intent(this.getApplicationContext(), WatchedMatchesScreen.class);
+            startActivityForResult(myIntent, 0);
+        } else if (id == R.id.ignored_matches_screen_label) {
 
         } else if (id == R.id.sign_out_label) {
             signOut();

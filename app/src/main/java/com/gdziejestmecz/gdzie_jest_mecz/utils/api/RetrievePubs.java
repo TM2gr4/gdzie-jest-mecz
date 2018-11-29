@@ -1,11 +1,10 @@
-package com.gdziejestmecz.gdzie_jest_mecz.components.api;
+package com.gdziejestmecz.gdzie_jest_mecz.utils.api;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gdziejestmecz.gdzie_jest_mecz.constants.ServerInfo;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.Api;
 
 import org.json.JSONArray;
 import org.json.JSONException;
