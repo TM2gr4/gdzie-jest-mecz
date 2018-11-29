@@ -1,4 +1,4 @@
-package com.gdziejestmecz.gdzie_jest_mecz.components;
+package com.gdziejestmecz.gdzie_jest_mecz.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,7 +22,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
             InputStream in = new java.net.URL(urldisplay).openStream();
             mIcon11 = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
-            Log.w("ERR_DOWNLOAD", e.getMessage());
+            Log.e("Error", e.getMessage());
             e.printStackTrace();
         }
         return mIcon11;

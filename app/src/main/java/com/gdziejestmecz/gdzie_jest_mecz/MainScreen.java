@@ -19,8 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -34,17 +32,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.support.design.widget.NavigationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.gdziejestmecz.gdzie_jest_mecz.components.MatchListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.components.MatchSpinnerListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.components.PubSpinnerListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncMatchListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncAddEventListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.AsyncPubListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrieveMatches;
-import com.gdziejestmecz.gdzie_jest_mecz.components.api.RetrievePubs;
+import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchSpinnerListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.PubSpinnerListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPubListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrieveMatches;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrievePubs;
+import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncMatchListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
 import com.google.android.gms.auth.api.Auth;
@@ -64,7 +60,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,
-                                                            AsyncAddEventListResponse,
                                                             AsyncPubListResponse,
                                                             AsyncMatchListResponse,
                                                             NavigationView.OnNavigationItemSelectedListener{
@@ -83,11 +78,11 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
     private ListView matchListContent;
 
-    private View addEventPanel;
+    private View addMatchPanel;
     private EditText input_desc;
     private Spinner input_match, input_pub;
-    private Button addEventButton;
-    private Button closeAddEventPanel;
+    private Button addMatchButton;
+    private Button closeAddMatchPanel;
     private MapViewFragment mapViewFragment;
 
     private View addPubPanel;
@@ -103,8 +98,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
 
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, R.string.open, R.string.closed);
@@ -115,7 +108,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         navigationView.setNavigationItemSelectedListener(this);
         initUIElements();
         addEventListeners();
-
         initGoogleAuth();
 
         getAndRenderMatches();
@@ -147,7 +139,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getTitle().equals("Dodaj Mecz")) {
-                            slidePanel(addEventPanel);
+                            slidePanel(addMatchPanel);
                         } else if (item.getTitle().equals("Dodaj Pub")) {
                             slidePanel(addPubPanel);
                         }
@@ -165,18 +157,18 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             }
         });
 
-        closeAddEventPanel.setOnClickListener(new View.OnClickListener() {
+        closeAddMatchPanel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "closing addEventPanel", Toast.LENGTH_SHORT).show();
-                slidePanel(addEventPanel);
+                Toast.makeText(MainScreen.this, "closing addMatchPanel", Toast.LENGTH_SHORT).show();
+                slidePanel(addMatchPanel);
             }
         });
-        addEventButton.setOnClickListener(new View.OnClickListener() {
+        addMatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "adding event", Toast.LENGTH_SHORT).show();
-                prepareEventToAdd();
+                Toast.makeText(MainScreen.this, "adding match", Toast.LENGTH_SHORT).show();
+                prepareMatchToAdd();
             }
         });
         closeAddPubPanel.setOnClickListener(new View.OnClickListener() {
@@ -190,29 +182,29 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainScreen.this, "adding pub", Toast.LENGTH_SHORT).show();
-                prepareEventToAdd();
+                prepareMatchToAdd();
             }
         });
     }
 
-    private void prepareEventToAdd() {
+    private void prepareMatchToAdd() {
 
-//        PostEvent postEvent = new PostEvent(event);
-//        postEvent.delegate = this;
+//        PostMatch postMatch = new PostMatch(event);
+//        postMatch.delegate = this;
 //
-//        postEvent.execute();
+//        postMatch.execute();
     }
 
     private void initUIElements() {
         this.drawer_layout = findViewById(R.id.drawer_layout);
         this.sideBar = findViewById(R.id.nav_view);
 
-        this.addEventPanel = findViewById(R.id.add_event_panel);
+        this.addMatchPanel = findViewById(R.id.add_match_panel);
         this.input_match = findViewById(R.id.input_match);
         this.input_pub = findViewById(R.id.input_pub);
         this.input_desc = findViewById(R.id.input_desc);
-        this.addEventButton = findViewById(R.id.add_btn_add_event_panel);
-        this.closeAddEventPanel = findViewById(R.id.x_btn_add_event_panel);
+        this.addMatchButton = findViewById(R.id.add_btn_add_match_panel);
+        this.closeAddMatchPanel = findViewById(R.id.x_btn_add_match_panel);
 
         this.addPubPanel = findViewById(R.id.add_pub_panel);
         this.addPubButton = findViewById(R.id.add_btn_add_pub_panel);
@@ -222,7 +214,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
 
-        this.matchListContent = findViewById(R.id.eventsListContent);
+        this.matchListContent = findViewById(R.id.matchListContent);
 
         View headerLayout = sideBar.getHeaderView(0);
         this.userFirstnameLabel = headerLayout.findViewById(R.id.userFirstnameLabel);
@@ -289,7 +281,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
 
     private void signOut() {
-
         Auth.GoogleSignInApi.signOut(googleApiClient)
                 .setResultCallback(new ResultCallback<Status>() {
                     @Override
@@ -306,16 +297,14 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     public void slidePanel(final View view) {
         if (!isAddEventPanelShown()) {
             // Show the panel
-            Animation bottomUp = AnimationUtils.loadAnimation(this,
-                    R.anim.up_slide);
+            Animation bottomUp = AnimationUtils.loadAnimation(this, R.anim.up_slide);
 
             view.startAnimation(bottomUp);
             view.setVisibility(View.VISIBLE);
         }
         else {
             // Hide the Panel
-            Animation bottomDown = AnimationUtils.loadAnimation(this,
-                    R.anim.bottom_slide);
+            Animation bottomDown = AnimationUtils.loadAnimation(this, R.anim.bottom_slide);
 
             view.startAnimation(bottomDown);
             view.setVisibility(View.GONE);
@@ -323,17 +312,33 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
 
     private boolean isAddEventPanelShown() {
-        return addEventPanel.getVisibility() == View.VISIBLE || addPubPanel.getVisibility() == View.VISIBLE;
-    }
-
-    private void clearMatchList() {
-        matchListContent.setAdapter(null);
+        return addMatchPanel.getVisibility() == View.VISIBLE || addPubPanel.getVisibility() == View.VISIBLE;
     }
 
     @Override
     public void retrieveMatchesProcessFinished(ArrayList<Match> matchList) {
         Log.d("[API_CALL]", " Matches retrieve result: " + matchList.toString());
         this.matchList = matchList;
+
+        /********FAKE EVENTS - USE WHEN API/SERVER FUCKS UP***********/
+//        eventList = new ArrayList<Event>();
+//        Team sampleHomeTeam = new Team(0, "RKS Offline Football CLub", "httpsDupa:///");
+//        Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
+//
+//        Match match = new Match(0, sampleHomeTeam, sampleAwayTeam, "2018-03-19", "19:30");
+//        Pub pub = new Pub(0, "Chmielowa Dolina", "Piotrkowska 127");
+//
+//        Event match1 = new Event(0, match, pub, 0, 0.0, 0.0, "Piwsko");
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        eventList.add(match1);
+//        this.eventList = eventList;
+        /******************************/
+
         matchListContent.setAdapter(new MatchListAdapter(this, this.matchList));
         input_match.setAdapter(new MatchSpinnerListAdapter(this, this.matchList));
     }
@@ -386,14 +391,14 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         }
     }
 
-    @Override
-    public void addEventProcessFinished(boolean success) {
-        if(success) {
-            Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show();
-            slidePanel(addEventPanel);
-            clearMatchList();
-        }
-    }
+//    @Override
+//    public void addEventProcessFinished(boolean success) {
+//        if(success) {
+//            Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show();
+//            slidePanel(addMatchPanel);
+//            clearMatchList();
+//        }
+//    }
 
 
     @Override
@@ -416,11 +421,10 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
+        if (id == R.id.watched_matches_screen_label) {
+            Intent myIntent = new Intent(this.getApplicationContext(), WatchedMatchesScreen.class);
+            startActivityForResult(myIntent, 0);
+        } else if (id == R.id.ignored_matches_screen_label) {
 
         } else if (id == R.id.sign_out_label) {
             signOut();

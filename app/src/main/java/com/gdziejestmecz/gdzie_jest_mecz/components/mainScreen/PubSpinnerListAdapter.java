@@ -1,4 +1,4 @@
-package com.gdziejestmecz.gdzie_jest_mecz.components;
+package com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen;
 
 import android.content.Context;
 import android.view.View;

@@ -1,11 +1,14 @@
-package com.gdziejestmecz.gdzie_jest_mecz.components.api;
+package com.gdziejestmecz.gdzie_jest_mecz.utils.api;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gdziejestmecz.gdzie_jest_mecz.constants.ServerInfo;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Team;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.Api;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncMatchListResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,15 +47,31 @@ public class RetrieveMatches extends AsyncTask<String, Void, ArrayList<Match>> {
 
                 JSONObject homeObj = obj.getJSONObject("homeTeam");
                 Team homeTeam = new Team(homeObj.getInt("id"),
-                                    homeObj.getString("name"),
-                            homeObj.getString("imgUrl"), homeObj.getString("countryOfOrigin"));
+                                        homeObj.getString("name"),
+                                        homeObj.getString("imgUrl"), homeObj.getString("countryOfOrigin"));
 
-                JSONObject awayObj = obj.getJSONObject("homeTeam");
+                JSONObject awayObj = obj.getJSONObject("awayTeam");
                 Team awayTeam = new Team(awayObj.getInt("id"),
-                        awayObj.getString("name"),
-                        awayObj.getString("imgUrl"), awayObj.getString("countryOfOrigin"));
+                                        awayObj.getString("name"),
+                                        awayObj.getString("imgUrl"), awayObj.getString("countryOfOrigin"));
 
-                Match match = new Match(id, homeTeam, awayTeam, date, time);
+                ArrayList<Pub> pubs = new ArrayList<Pub>();
+                JSONArray pubsJsonArray = obj.getJSONArray("pubs");
+                for (int j = 0; j < pubsJsonArray.length(); j++) {
+                    JSONObject placeObj = pubsJsonArray.getJSONObject(j);
+                    int pubId = placeObj.getJSONObject("pub").getInt("id");
+                    double lati = placeObj.getJSONObject("pub").getDouble("latitude");
+                    double longi = placeObj.getJSONObject("pub").getDouble("longitude");
+                    String street = placeObj.getJSONObject("pub").getString("street");
+                    String number = placeObj.getJSONObject("pub").getString("number");
+                    String name = placeObj.getJSONObject("pub").getString("name");
+//                    String desc = placeObj.getString("desc");
+
+                    Pub pub = new Pub(pubId, lati, longi, name, street, number);
+                    pubs.add(pub);
+                }
+
+                Match match = new Match(id, homeTeam, awayTeam, date, time, pubs);
                 matches.add(match);
             }
             Log.d("API_CALL", "got matches: " + result);

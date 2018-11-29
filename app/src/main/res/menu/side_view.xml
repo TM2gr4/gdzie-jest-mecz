@@ -3,16 +3,17 @@
     >
 
     <item
-        android:id="@+id/nav_camera"
-        android:title="asdasdasd" />
+        android:id="@+id/home_screen_label"
+        android:title="Strona główna" />
     <item
-        android:id="@+id/nav_gallery"
-        android:title="asdasdads" />
+        android:id="@+id/watched_matches_screen_label"
+        android:title="Obserwowane" />
     <item
-        android:id="@+id/nav_slideshow"
-        android:title="AAAAAAAAAA" />
+        android:id="@+id/ignored_matches_screen_label"
+        android:title="Ignorowane" />
     <item
         android:id="@+id/sign_out_label"
+        android:iconTint="@color/wineRed"
         android:title="Wyloguj" />
 
 </menu>
