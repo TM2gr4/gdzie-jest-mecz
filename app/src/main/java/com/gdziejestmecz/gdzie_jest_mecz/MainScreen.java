@@ -391,16 +391,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         }
     }
 
-//    @Override
-//    public void addEventProcessFinished(boolean success) {
-//        if(success) {
-//            Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show();
-//            slidePanel(addMatchPanel);
-//            clearMatchList();
-//        }
-//    }
-
-
     @Override
     public void retrievePubsProcessFinished(ArrayList<Pub> pubList) {
         this.pubList = pubList;

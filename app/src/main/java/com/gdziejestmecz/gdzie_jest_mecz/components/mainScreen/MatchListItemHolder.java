@@ -2,6 +2,7 @@ package com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gdziejestmecz.gdzie_jest_mecz.R;
@@ -17,6 +18,7 @@ public class MatchListItemHolder {
             pubsCount = null;
     private ImageView homeTeamLogo = null,
                         awayTeamLogo = null;
+    private ListView pubsList = null;
 
     public MatchListItemHolder(View row) {
         this.row = row;
@@ -69,5 +71,12 @@ public class MatchListItemHolder {
             this.pubsCount = (TextView) row.findViewById(R.id.pubs_count_counter);
         }
         return this.pubsCount;
+    }
+
+    public ListView getPubsList() {
+        if (this.pubsList == null) {
+            this.pubsList = (ListView) row.findViewById(R.id.pubs_list);
+        }
+        return this.pubsList;
     }
 }

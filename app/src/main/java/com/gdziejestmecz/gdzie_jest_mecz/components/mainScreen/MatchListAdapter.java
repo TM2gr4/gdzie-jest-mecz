@@ -60,6 +60,10 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
         new DownloadImageTask((ImageView) convertView.findViewById(R.id.away_team_logo))
                 .execute(match.getAwayTeam().getLogoURL());
 
+        holder.getPubsList().setAdapter(new PubListAdapter(context, matchList.get(position).getPubs()));
+        int theSizeIWant = match.getPubs().size() * 40;
+        holder.getPubsList().setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, theSizeIWant));
+
         LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
         SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);
         TextView swipeActionLabel = (TextView) convertView.findViewById(R.id.swipe_action_label);
@@ -125,77 +129,6 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
                             deleteEvent(position);
                         }
                     }, 0);
-                }
-            }
-
-            @Override
-            public void onStartClose(SwipeLayout layout) {
-
-            }
-
-            @Override
-            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-                Log.d("SwipeEvent", "onHandRelease");
-            }
-        });
-    }
-
-    private void handleSwipeAction(SwipeLayout swipeLayout, final LinearLayout background, final TextView swipeActionLabel, final ImageView icoBox, final int position) {
-        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-        swipeLayout.addDrag(SwipeLayout.DragEdge.Left, background);
-
-        swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-            @Override
-            public void onClose(SwipeLayout layout) {
-                //when the SurfaceView totally cover the BottomView.
-            }
-
-            @Override
-            public void onUpdate(final SwipeLayout layout, int leftOffset, int topOffset) {
-                Log.d("SwipeEvent", "its being swipped");
-            }
-
-            @Override
-            public void onStartOpen(SwipeLayout layout) {
-                if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
-                    Log.d("SwipeEvent", "dragged left");
-                    background.setBackgroundColor(Colors.lapisBlue);
-                    swipeActionLabel.setText("Dodano do obserwowanych");
-                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_border_white_48dp));
-
-                } else {
-                    Log.d("SwipeEvent", "dragged right");
-                    background.setBackgroundColor(Color.RED);
-                    swipeActionLabel.setText("Usunięty");
-                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_forever_white_48dp));
-                }
-            }
-
-            @Override
-            public void onOpen(final SwipeLayout layout) {
-                Log.d("SwipeEvent", "onOpen");
-
-                if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
-                    Log.d("SwipeEvent", "opened left");
-                    //dodajDoObserwowanych()
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            layout.close(true);
-                        }
-                    }, 1000);
-                } else {
-                    Log.d("SwipeEvent", "opened right");
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            deleteEvent(position);
-                        }
-                    }, 500);
                 }
             }
 
