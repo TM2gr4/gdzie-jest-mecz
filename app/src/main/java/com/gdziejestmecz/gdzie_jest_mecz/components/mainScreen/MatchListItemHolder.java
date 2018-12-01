@@ -1,11 +1,16 @@
 package com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen;
 
+import android.content.Context;
+import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gdziejestmecz.gdzie_jest_mecz.R;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 
 import org.w3c.dom.Text;
 
@@ -18,10 +23,30 @@ public class MatchListItemHolder {
             pubsCount = null;
     private ImageView homeTeamLogo = null,
                         awayTeamLogo = null;
+    private CardView card = null;
     private ListView pubsList = null;
 
-    public MatchListItemHolder(View row) {
+    private boolean isPubsListExpanded;
+
+    public MatchListItemHolder(final Context context, View row, final Match match) {
         this.row = row;
+        this.isPubsListExpanded = false;
+
+        this.getCardView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("{CLick]","Match Card");
+
+                if (isPubsListExpanded) {
+                    getPubsList().setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 0));
+                } else {
+                    getPubsList().setAdapter(new PubListAdapter(context, match.getPubs()));
+                    int theSizeIWant = match.getPubs().size() * 40;
+                    getPubsList().setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, theSizeIWant));
+                }
+                isPubsListExpanded = !isPubsListExpanded;
+            };
+        });
     }
 
     public TextView getDateText() {
@@ -78,5 +103,12 @@ public class MatchListItemHolder {
             this.pubsList = (ListView) row.findViewById(R.id.pubs_list);
         }
         return this.pubsList;
+    }
+
+    public CardView getCardView() {
+        if (this.card == null) {
+            this.card = (CardView) row.findViewById(R.id.match_card);
+        }
+        return this.card;
     }
 }

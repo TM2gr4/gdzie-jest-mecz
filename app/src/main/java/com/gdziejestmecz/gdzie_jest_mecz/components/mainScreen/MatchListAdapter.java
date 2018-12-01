@@ -25,27 +25,31 @@ import java.util.ArrayList;
 public class MatchListAdapter extends ArrayAdapter<Match> {
     private Context context;
     private ArrayList<Match> matchList;
+    private boolean isPubsListExpanded;
 
     public MatchListAdapter(Context context, ArrayList<Match> data) {
         super(context, -1, -1, data);
         this.context = context;
         this.matchList = data;
+
+        this.isPubsListExpanded = false;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         MatchListItemHolder holder = null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        final Match match = matchList.get(position);
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.match_list_row, null, false);
-            holder = new MatchListItemHolder(convertView);
+            holder = new MatchListItemHolder(context, convertView, match);
             convertView.setTag(holder);
+
         } else {
             holder = (MatchListItemHolder) convertView.getTag();
         }
 
-        Match match = matchList.get(position);
         String date = match.getDate().split("-")[2] + "." + match.getDate().split("-")[1];
         String time = match.getTime().split(":")[0] + ":" + match.getTime().split(":")[1];
         holder.getDateText().setText(date);
@@ -60,10 +64,6 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
         new DownloadImageTask((ImageView) convertView.findViewById(R.id.away_team_logo))
                 .execute(match.getAwayTeam().getLogoURL());
 
-        holder.getPubsList().setAdapter(new PubListAdapter(context, matchList.get(position).getPubs()));
-        int theSizeIWant = match.getPubs().size() * 40;
-        holder.getPubsList().setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, theSizeIWant));
-
         LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
         SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);
         TextView swipeActionLabel = (TextView) convertView.findViewById(R.id.swipe_action_label);
@@ -72,7 +72,9 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
 
         return convertView;
     }
+    private void pubsListToggle(final MatchListItemHolder holder, Match match, int position) {
 
+    }
     private void handleSwipeAction(final int position, final SwipeLayout swipeLayout, final LinearLayout swipeBackground, final TextView swipeActionLabel, final ImageView icoBox) {
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         swipeLayout.addDrag(SwipeLayout.DragEdge.Left, swipeBackground);
