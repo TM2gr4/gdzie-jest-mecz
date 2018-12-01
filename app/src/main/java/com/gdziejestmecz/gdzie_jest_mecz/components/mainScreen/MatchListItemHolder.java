@@ -32,6 +32,8 @@ public class MatchListItemHolder {
         this.row = row;
         this.isPubsListExpanded = false;
 
+        this.getPubsCount().setText(Integer.toString(match.getPubs().size()));
+
         this.getCardView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

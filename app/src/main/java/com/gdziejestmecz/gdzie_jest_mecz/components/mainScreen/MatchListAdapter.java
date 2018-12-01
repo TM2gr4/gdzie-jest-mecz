@@ -56,7 +56,6 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
         holder.getTimeText().setText(time);
         holder.getHomeTeamLabel().setText(match.getHomeTeam().getName());
         holder.getAwayTeamLabel().setText(match.getAwayTeam().getName());
-        holder.getPubsCount().setText(Integer.toString(match.getPubs().size()));
 
         new DownloadImageTask((ImageView) convertView.findViewById(R.id.home_team_logo))
                 .execute(match.getHomeTeam().getLogoURL());

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.gdziejestmecz.gdzie_jest_mecz.constants.ServerInfo;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,17 +29,14 @@ public class Api {
         return response.body().string();
     }
 
-    public static boolean postMatch(Match match) {
+    public static boolean postMatch(Match match, Pub pub, String description) {
 
         JSONObject jsonObject = new JSONObject();
         try {
-//            jsonObject.put("description", match.getDescription());
-            jsonObject.put("id", Integer.toString(match.getId()));
-//            jsonObject.put("longitude", Double.toString(match.getLongitude()));
-//            jsonObject.put("matchId", Integer.toString(match.getMatch().getId()));
-//            jsonObject.put("numberOfAttendees", Integer.toString(match.getNumberOfAttendees()));
-//            jsonObject.put("pubId", Integer.toString(match.getPub().getId()));
-//            jsonObject.put("pubId", Integer.toString(match.getPubs().getId()));
+            jsonObject.put("description", description);
+            jsonObject.put("pubId", Integer.toString(pub.getId()));
+            jsonObject.put("matchId", Integer.toString(match.getId()));
+            jsonObject.put("numberOfAttendees", 0);
 
         }catch (JSONException e){
             Log.e("JSON", "Couldn't create json out of envt object. " + e.getMessage());
@@ -46,9 +44,8 @@ public class Api {
         }
 
         RequestBody body = RequestBody.create(JSON, jsonObject.toString());
-
         Request request = new Request.Builder()
-                .url(ServerInfo.getRootUrl() + ServerInfo.getEndpointMatches() + ServerInfo.getAdd())
+                .url(ServerInfo.getRootUrl() + ServerInfo.getEndpointEvents() + ServerInfo.getAdd())
                 .post(body)
                 .build();
         try {
