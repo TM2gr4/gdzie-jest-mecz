@@ -140,7 +140,18 @@
                             tools:textColor="@color/blackyBlack" />
 
                     </LinearLayout>
+                    <RelativeLayout
+                        android:id="@+id/loading_matches"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone">
 
+                        <ProgressBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true" />
+                    </RelativeLayout>
                     <ListView
                         android:id="@+id/matchListContent"
                         android:layout_width="match_parent"
@@ -151,12 +162,6 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
-
-
-
-
-
 
         <RelativeLayout
             android:id="@+id/add_match_panel"
@@ -221,6 +226,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="darmowe piwko?..."/>
+
                 <Button
                     android:id="@+id/add_btn_add_match_panel"
                     android:layout_width="wrap_content"
@@ -228,7 +234,18 @@
                     android:layout_centerInParent="true"
                     android:text="Dodaj" />
 
+                <RelativeLayout
+                    android:id="@+id/loadingAddMatch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="gone">
 
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true" />
+                </RelativeLayout>
 
             </LinearLayout>
         </RelativeLayout>

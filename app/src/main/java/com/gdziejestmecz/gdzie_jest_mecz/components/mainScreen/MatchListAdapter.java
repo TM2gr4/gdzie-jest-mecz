@@ -25,34 +25,37 @@ import java.util.ArrayList;
 public class MatchListAdapter extends ArrayAdapter<Match> {
     private Context context;
     private ArrayList<Match> matchList;
+    private boolean isPubsListExpanded;
 
     public MatchListAdapter(Context context, ArrayList<Match> data) {
         super(context, -1, -1, data);
         this.context = context;
         this.matchList = data;
+
+        this.isPubsListExpanded = false;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         MatchListItemHolder holder = null;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        final Match match = matchList.get(position);
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.match_list_row, null, false);
-            holder = new MatchListItemHolder(convertView);
+            holder = new MatchListItemHolder(context, convertView, match);
             convertView.setTag(holder);
+
         } else {
             holder = (MatchListItemHolder) convertView.getTag();
         }
 
-        Match match = matchList.get(position);
         String date = match.getDate().split("-")[2] + "." + match.getDate().split("-")[1];
         String time = match.getTime().split(":")[0] + ":" + match.getTime().split(":")[1];
         holder.getDateText().setText(date);
         holder.getTimeText().setText(time);
         holder.getHomeTeamLabel().setText(match.getHomeTeam().getName());
         holder.getAwayTeamLabel().setText(match.getAwayTeam().getName());
-        holder.getPubsCount().setText(Integer.toString(match.getPubs().size()));
 
         new DownloadImageTask((ImageView) convertView.findViewById(R.id.home_team_logo))
                 .execute(match.getHomeTeam().getLogoURL());
@@ -68,7 +71,9 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
 
         return convertView;
     }
+    private void pubsListToggle(final MatchListItemHolder holder, Match match, int position) {
 
+    }
     private void handleSwipeAction(final int position, final SwipeLayout swipeLayout, final LinearLayout swipeBackground, final TextView swipeActionLabel, final ImageView icoBox) {
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         swipeLayout.addDrag(SwipeLayout.DragEdge.Left, swipeBackground);
@@ -125,77 +130,6 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
                             deleteEvent(position);
                         }
                     }, 0);
-                }
-            }
-
-            @Override
-            public void onStartClose(SwipeLayout layout) {
-
-            }
-
-            @Override
-            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-                Log.d("SwipeEvent", "onHandRelease");
-            }
-        });
-    }
-
-    private void handleSwipeAction(SwipeLayout swipeLayout, final LinearLayout background, final TextView swipeActionLabel, final ImageView icoBox, final int position) {
-        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-        swipeLayout.addDrag(SwipeLayout.DragEdge.Left, background);
-
-        swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-            @Override
-            public void onClose(SwipeLayout layout) {
-                //when the SurfaceView totally cover the BottomView.
-            }
-
-            @Override
-            public void onUpdate(final SwipeLayout layout, int leftOffset, int topOffset) {
-                Log.d("SwipeEvent", "its being swipped");
-            }
-
-            @Override
-            public void onStartOpen(SwipeLayout layout) {
-                if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
-                    Log.d("SwipeEvent", "dragged left");
-                    background.setBackgroundColor(Colors.lapisBlue);
-                    swipeActionLabel.setText("Dodano do obserwowanych");
-                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_border_white_48dp));
-
-                } else {
-                    Log.d("SwipeEvent", "dragged right");
-                    background.setBackgroundColor(Color.RED);
-                    swipeActionLabel.setText("Usunięty");
-                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_forever_white_48dp));
-                }
-            }
-
-            @Override
-            public void onOpen(final SwipeLayout layout) {
-                Log.d("SwipeEvent", "onOpen");
-
-                if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
-                    Log.d("SwipeEvent", "opened left");
-                    //dodajDoObserwowanych()
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            layout.close(true);
-                        }
-                    }, 1000);
-                } else {
-                    Log.d("SwipeEvent", "opened right");
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            deleteEvent(position);
-                        }
-                    }, 500);
                 }
             }
 

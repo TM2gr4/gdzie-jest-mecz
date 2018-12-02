@@ -26,6 +26,19 @@
         app:fontFamily="@font/montserrat"
         android:textSize="20sp"/>
 
+    <RelativeLayout
+        android:id="@+id/loading_matches"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
+
     <ListView
         android:id="@+id/watched_matches_list"
         android:layout_width="match_parent"

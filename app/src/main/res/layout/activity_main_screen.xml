@@ -78,17 +78,28 @@
                     android:layout_height="200dp" android:tag="fragmentMap"/>
 
             <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/searchBar">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" 
+                android:id="@+id/searchBar">
 
-                <EditText
+                
+                <LinearLayout
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <EditText
                         android:layout_width="248dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/searchText"
                         android:layout_weight="0.5"
                         android:inputType="textPersonName"
                         android:hint="@string/search_hint"/>
+
+                </LinearLayout>
+
 
                 <Button
                         android:layout_width="wrap_content"
@@ -117,7 +128,18 @@
                         tools:textColor="@color/blackyBlack" />
 
                 </LinearLayout>
+                <RelativeLayout
+                    android:id="@+id/loading_matches"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="gone">
 
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true" />
+                </RelativeLayout>
                 <ListView
                     android:id="@+id/matchListContent"
                     android:layout_width="match_parent"
@@ -218,18 +240,44 @@
                 android:textSize="20sp"
                 app:fontFamily="@font/montserrat"
                 android:hint="darmowe piwko?..." />
-
-            <Button
-                android:id="@+id/add_btn_add_match_panel"
-                android:drawableLeft="@drawable/ic_plus"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:backgroundTint="@color/wineRed"
-                android:textColor="@color/boneWhite"
-                android:gravity="bottom"
-                android:layout_gravity="bottom"
-                android:text="Dodaj" />
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/loadingPanel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/add_btn_add_match_panel"
+                        android:drawableLeft="@drawable/ic_plus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:backgroundTint="@color/wineRed"
+                        android:textColor="@color/boneWhite"
+                        android:gravity="bottom"
+                        android:layout_gravity="bottom"
+                        android:text="Dodaj" />
+
+                    <RelativeLayout
+                        android:id="@+id/loadingAddMatch"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone">
+
+                        <ProgressBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
     </RelativeLayout>

@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,7 +37,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchSpinnerListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.PubSpinnerListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostMatchResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPubListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.PostMatch;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrieveMatches;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrievePubs;
 import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchListAdapter;
@@ -62,15 +65,18 @@ import java.util.ArrayList;
 public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,
                                                             AsyncPubListResponse,
                                                             AsyncMatchListResponse,
+                                                            AsyncPostMatchResponse,
                                                             NavigationView.OnNavigationItemSelectedListener{
 
     private TextView userFirstnameLabel, userEmailLabel;
     private ImageView userAvatarImageView;
     private GoogleApiClient googleApiClient;
 
+    private MapViewFragment mapViewFragment;
     private DrawerLayout drawer_layout;
     private NavigationView sideBar;
     private Button plusBtn, menuBtn;
+    private RelativeLayout loadingMatches;
     private ActionBarDrawerToggle mToogle;
 
     private ArrayList<Match> matchList;
@@ -83,11 +89,12 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private Spinner input_match, input_pub;
     private Button addMatchButton;
     private Button closeAddMatchPanel;
-    private MapViewFragment mapViewFragment;
+    private RelativeLayout progressBarAddMatch;
 
     private View addPubPanel;
     private Button addPubButton;
     private Button closeAddPubPanel;
+
 
     private static final String[] INITIAL_PERMS={
         Manifest.permission.ACCESS_FINE_LOCATION
@@ -122,6 +129,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
 
     private void getAndRenderMatches() {
+        this.loadingMatches.setVisibility(View.VISIBLE);
+
         RetrieveMatches retrieveMatches = new RetrieveMatches();
         retrieveMatches.delegate = this;
 
@@ -152,7 +161,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         });
         menuBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               // Toast.makeText(MainScreen.this, "@string/menu_tapped", Toast.LENGTH_SHORT).show();
                 drawer_layout.openDrawer(Gravity.LEFT);
             }
         });
@@ -160,14 +168,17 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         closeAddMatchPanel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "closing addMatchPanel", Toast.LENGTH_SHORT).show();
                 slidePanel(addMatchPanel);
             }
         });
         addMatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "adding match", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainScreen.this, "Adding match", Toast.LENGTH_SHORT).show();
+
+                addMatchButton.setEnabled(false);
+                closeAddMatchPanel.setEnabled(false);
+
                 prepareMatchToAdd();
             }
         });
@@ -182,34 +193,38 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainScreen.this, "adding pub", Toast.LENGTH_SHORT).show();
-                prepareMatchToAdd();
             }
         });
     }
 
     private void prepareMatchToAdd() {
+        progressBarAddMatch.setVisibility(View.VISIBLE);
 
-//        PostMatch postMatch = new PostMatch(event);
-//        postMatch.delegate = this;
-//
-//        postMatch.execute();
+        Match match = (Match) input_match.getSelectedItem();
+        Pub pub = (Pub) input_pub.getSelectedItem();
+        String desc = input_desc.getText().toString();
+
+        PostMatch postMatch = new PostMatch(match, pub, desc);
+        postMatch.delegate = this;
+        postMatch.execute();
     }
 
     private void initUIElements() {
         this.drawer_layout = findViewById(R.id.drawer_layout);
         this.sideBar = findViewById(R.id.nav_view);
+        this.loadingMatches = findViewById(R.id.loading_matches);
 
         this.addMatchPanel = findViewById(R.id.add_match_panel);
         this.input_match = findViewById(R.id.input_match);
         this.input_pub = findViewById(R.id.input_pub);
         this.input_desc = findViewById(R.id.input_desc);
         this.addMatchButton = findViewById(R.id.add_btn_add_match_panel);
+        this.progressBarAddMatch = findViewById(R.id.loadingAddMatch);
         this.closeAddMatchPanel = findViewById(R.id.x_btn_add_match_panel);
 
         this.addPubPanel = findViewById(R.id.add_pub_panel);
         this.addPubButton = findViewById(R.id.add_btn_add_pub_panel);
         this.closeAddPubPanel = findViewById(R.id.x_btn_add_pub_panel);
-
 
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
@@ -277,7 +292,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(this, "Nie można nawiązać połacznia...", Toast.LENGTH_SHORT);
     }
 
     private void signOut() {
@@ -320,27 +335,19 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         Log.d("[API_CALL]", " Matches retrieve result: " + matchList.toString());
         this.matchList = matchList;
 
-        /********FAKE EVENTS - USE WHEN API/SERVER FUCKS UP***********/
-//        eventList = new ArrayList<Event>();
-//        Team sampleHomeTeam = new Team(0, "RKS Offline Football CLub", "httpsDupa:///");
-//        Team sampleAwayTeam = new Team(1, "JBC Noapi", "httpsDupa:///");
-//
-//        Match match = new Match(0, sampleHomeTeam, sampleAwayTeam, "2018-03-19", "19:30");
-//        Pub pub = new Pub(0, "Chmielowa Dolina", "Piotrkowska 127");
-//
-//        Event match1 = new Event(0, match, pub, 0, 0.0, 0.0, "Piwsko");
-//        eventList.add(match1);
-//        eventList.add(match1);
-//        eventList.add(match1);
-//        eventList.add(match1);
-//        eventList.add(match1);
-//        eventList.add(match1);
-//        eventList.add(match1);
-//        this.eventList = eventList;
-        /******************************/
-
-        matchListContent.setAdapter(new MatchListAdapter(this, this.matchList));
+        matchListContent.setAdapter(new MatchListAdapter(this, getMatchesWithNonZeroPubsCount(this.matchList)));
         input_match.setAdapter(new MatchSpinnerListAdapter(this, this.matchList));
+        this.loadingMatches.setVisibility(View.GONE);
+    }
+
+    private ArrayList<Match> getMatchesWithNonZeroPubsCount(ArrayList<Match> matchList) {
+        ArrayList<Match> filteredMatches = new ArrayList<Match>();
+        for (Match m : matchList) {
+            if (m.getPubs().size() > 0) {
+                filteredMatches.add(m);
+            }
+        }
+        return filteredMatches;
     }
 
     @Override
@@ -391,16 +398,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         }
     }
 
-//    @Override
-//    public void addEventProcessFinished(boolean success) {
-//        if(success) {
-//            Toast.makeText(this, "Successfully added!", Toast.LENGTH_SHORT).show();
-//            slidePanel(addMatchPanel);
-//            clearMatchList();
-//        }
-//    }
-
-
     @Override
     public void retrievePubsProcessFinished(ArrayList<Pub> pubList) {
         this.pubList = pubList;
@@ -433,5 +430,29 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void postMatchProcessFinished(boolean isSuccessful) {
+        if (isSuccessful) {
+            Toast.makeText(this, "Odświeżam liste meczów...", Toast.LENGTH_SHORT).show();
+            hideMatchList();
+            getAndRenderMatches();
+            showMatchList();
+            slidePanel(addMatchPanel);
+        } else {
+            Toast.makeText(this, "Ups, nie mozna dodać meczu :-(", Toast.LENGTH_SHORT).show();
+        }
+        progressBarAddMatch.setVisibility(View.GONE);
+        
+        addMatchButton.setEnabled(true);
+        closeAddMatchPanel.setEnabled(true);
+    }
+
+    private void hideMatchList() {
+        matchListContent.setVisibility(View.GONE);
+    }
+    private void showMatchList() {
+        matchListContent.setVisibility(View.VISIBLE);
     }
 }

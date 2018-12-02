@@ -23,7 +23,8 @@
         android:text="Znajdz transmisje meczu w Twojej okolicy!"
         android:textAlignment="center"
         android:textColor="#111112"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:fontFamily="@font/montserrat" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -74,6 +75,7 @@
         android:gravity="bottom"
         android:text="ChoNaMecz Team 2018 \n Wszelkie prawa zastrzeżone"
         android:textAlignment="center"
-        android:textColor="#C3c3c3" />
+        android:textColor="#C3c3c3"
+        app:fontFamily="@font/montserrat" />
 
 </LinearLayout>
