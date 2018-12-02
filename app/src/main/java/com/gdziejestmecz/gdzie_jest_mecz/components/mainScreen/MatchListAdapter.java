@@ -57,11 +57,11 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
         holder.getHomeTeamLabel().setText(match.getHomeTeam().getName());
         holder.getAwayTeamLabel().setText(match.getAwayTeam().getName());
 
-        new DownloadImageTask((ImageView) convertView.findViewById(R.id.home_team_logo))
-                .execute(match.getHomeTeam().getLogoURL());
-
-        new DownloadImageTask((ImageView) convertView.findViewById(R.id.away_team_logo))
-                .execute(match.getAwayTeam().getLogoURL());
+//        new DownloadImageTask((ImageView) convertView.findViewById(R.id.home_team_logo))
+//                .execute(match.getHomeTeam().getLogoURL());
+//
+//        new DownloadImageTask((ImageView) convertView.findViewById(R.id.away_team_logo))
+//                .execute(match.getAwayTeam().getLogoURL());
 
         LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
         SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);
