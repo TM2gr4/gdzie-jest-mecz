@@ -15,6 +15,8 @@ public class ServerInfo {
 
     private static final String ADD = "/add";
 
+    private static final String OAUTH_TOKEN = "/oauth/token";
+
     public static String getRootUrl(){ return ROOT_URL;}
     public static String getEndpointMatches(){ return ENDPOINT_MATCHES;}
     public static String getEndpointEvents(){ return ENDPOINT_EVENTS;}
@@ -23,4 +25,5 @@ public class ServerInfo {
     public static String getEndpointPubs(){ return ENDPOINT_PUBS;}
 
     public static String getAdd() {return ADD;}
+    public static String getOauthToken() {return OAUTH_TOKEN;}
 }

@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -23,8 +24,10 @@ public class Api {
 
     public static String get(String url) throws IOException {
         Request request = new Request.Builder()
+                .addHeader("Authorization" , "Bearer " + TokenStore.getAccessToken())
                 .url(url)
                 .build();
+        System.out.println(TokenStore.getAccessToken());
         Response response = client.newCall(request).execute();
         return response.body().string();
     }
@@ -46,6 +49,7 @@ public class Api {
         RequestBody body = RequestBody.create(JSON, jsonObject.toString());
         Request request = new Request.Builder()
                 .url(ServerInfo.getRootUrl() + ServerInfo.getEndpointEvents() + ServerInfo.getAdd())
+                .addHeader("Authorization" , "Bearer " + TokenStore.getAccessToken())
                 .post(body)
                 .build();
         try {
@@ -62,5 +66,38 @@ public class Api {
             Log.d("API_CALL", "POSTING MATCH FAILED!!! BEACUSE: " + e.getMessage());
             return false;
         }
+    }
+
+    public static GoogleTokenResponse postGoogleToken(String token, TokenType tokenType) {
+        FormBody.Builder formBuilder = new FormBody.Builder();
+
+        if(tokenType.equals(TokenType.GOOGLE_TOKEN)) {
+            formBuilder.add("grant_type", "password");
+            formBuilder.add("authorize_token", token);
+        }
+        else {
+            formBuilder.add("grant_type", "refresh_token");
+            formBuilder.add("refresh_token", token);
+        }
+
+        RequestBody formBody = formBuilder.build();
+        Request request = new Request.Builder()
+                .url(ServerInfo.getRootUrl() + ServerInfo.getOauthToken())
+                .addHeader("Authorization", "Basic YW5kcm9pZDpzZWNyZXQ=")
+                .post(formBody)
+                .build();
+
+        GoogleTokenResponse googleTokenResponse = null;
+        try {
+            Response response = client.newCall(request).execute();
+            JSONObject jsonObject = new JSONObject(response.body().string());
+            googleTokenResponse = new GoogleTokenResponse(jsonObject.getString("access_token"),
+                    jsonObject.getString("refresh_token"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return googleTokenResponse;
     }
 }
