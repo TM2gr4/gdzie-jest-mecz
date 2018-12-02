@@ -23,6 +23,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 public class MatchListAdapter extends ArrayAdapter<Match> {
+    private final LayoutInflater inflater;
     private Context context;
     private ArrayList<Match> matchList;
     private boolean isPubsListExpanded;
@@ -31,20 +32,29 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
         super(context, -1, -1, data);
         this.context = context;
         this.matchList = data;
-
         this.isPubsListExpanded = false;
+
+        inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+
+
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         MatchListItemHolder holder = null;
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+
         final Match match = matchList.get(position);
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.match_list_row, null, false);
             holder = new MatchListItemHolder(context, convertView, match);
             convertView.setTag(holder);
+
+            LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
+            SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);
+            TextView swipeActionLabel = (TextView) convertView.findViewById(R.id.swipe_action_label);
+            ImageView icoBox = (ImageView) convertView.findViewById(R.id.ico_box);
+            handleSwipeAction(position, swipeLayout, swipeBackground, swipeActionLabel, icoBox);
 
         } else {
             holder = (MatchListItemHolder) convertView.getTag();
@@ -60,17 +70,11 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
         Picasso.get().load(match.getHomeTeam().getLogoURL()).into((ImageView) convertView.findViewById(R.id.home_team_logo));
         Picasso.get().load(match.getAwayTeam().getLogoURL()).into((ImageView) convertView.findViewById(R.id.away_team_logo));
 
-        LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
-        SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);
-        TextView swipeActionLabel = (TextView) convertView.findViewById(R.id.swipe_action_label);
-        ImageView icoBox = (ImageView) convertView.findViewById(R.id.ico_box);
-        handleSwipeAction(position, swipeLayout, swipeBackground, swipeActionLabel, icoBox);
+
 
         return convertView;
     }
-    private void pubsListToggle(final MatchListItemHolder holder, Match match, int position) {
 
-    }
     private void handleSwipeAction(final int position, final SwipeLayout swipeLayout, final LinearLayout swipeBackground, final TextView swipeActionLabel, final ImageView icoBox) {
         swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
         swipeLayout.addDrag(SwipeLayout.DragEdge.Left, swipeBackground);
