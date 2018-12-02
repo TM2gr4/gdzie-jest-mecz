@@ -8,17 +8,18 @@ import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.view.Gravity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -35,17 +36,22 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchSpinnerListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.PubSpinnerListAdapter;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
+import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncMatchListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostGoogleTokenResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostMatchResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPubListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.GoogleTokenResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.PostGoogleToken;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.PostMatch;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrieveMatches;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrievePubs;
-import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchListAdapter;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncMatchListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
-import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.TokenStore;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.TokenType;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -58,15 +64,15 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
-import java.util.List;
-
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainScreen extends FragmentActivity implements GoogleApiClient.OnConnectionFailedListener,
                                                             AsyncPubListResponse,
                                                             AsyncMatchListResponse,
                                                             AsyncPostMatchResponse,
-                                                            NavigationView.OnNavigationItemSelectedListener{
+                                                            NavigationView.OnNavigationItemSelectedListener,
+                                                            AsyncPostGoogleTokenResponse {
 
     private TextView userFirstnameLabel, userEmailLabel;
     private ImageView userAvatarImageView;
@@ -116,9 +122,15 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         initUIElements();
         addEventListeners();
         initGoogleAuth();
-
-        getAndRenderMatches();
-        getPubs();
+        Intent intent = getIntent();
+        Boolean isLoggedManually = intent.getExtras().getBoolean("isLoggedManually");
+        if(isLoggedManually){
+            getAndRenderMatches();
+            getPubs();
+        }
+        else {
+            authorize();
+        }
     }
 
     private void getPubs() {
@@ -300,6 +312,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                 .setResultCallback(new ResultCallback<Status>() {
                     @Override
                     public void onResult(@NonNull Status status) {
+                        PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("access_token", "").apply();
                         Intent i = new Intent(MainScreen.this,SignInScreen.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(i);
@@ -454,5 +467,20 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
     private void showMatchList() {
         matchListContent.setVisibility(View.VISIBLE);
+    }
+
+    private void authorize() {
+        PostGoogleToken postGoogleToken = new PostGoogleToken(TokenStore.getRefreshToken(), TokenType.REFRESH_TOKEN);
+        postGoogleToken.delegate = this;
+        postGoogleToken.execute();
+    }
+
+    @Override
+    public void postGoogleTokenProcessFinished(GoogleTokenResponse token) {
+        TokenStore.setAccessToken(token.getAccessToken());
+        Log.d("LOGIN RESPONSE" , token.getAccessToken() + " " + token.getRefreshToken());
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("access_token", token.getRefreshToken()).apply();
+        getAndRenderMatches();
+        getPubs();
     }
 }
