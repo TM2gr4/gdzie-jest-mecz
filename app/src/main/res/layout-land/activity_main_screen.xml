@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="start"
+    >
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -14,12 +15,15 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/main_screen"
         android:layout_width="match_parent"
+
         android:layout_height="match_parent"
         >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:clipChildren="false"
+            android:clipToPadding="false">
 
             <LinearLayout
                 android:id="@+id/navBar"
@@ -28,7 +32,10 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
                 android:paddingLeft="4dp"
-                android:paddingRight="4dp">
+                android:paddingRight="4dp"
+                android:paddingBottom="15dp"
+                android:clipChildren="false"
+                android:clipToPadding="false">
 
                 <Button
                     android:id="@+id/menuBtn"
@@ -55,12 +62,15 @@
                     android:id="@+id/plus_btn"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:stateListAnimator="@null"
+                    android:elevation="6dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"
                     android:background="@drawable/round_shape"
                     android:text="@string/plus_sign"
                     android:textColor="@color/boneWhite"
-                    android:textSize="30dp" />
+                    android:textSize="30dp"
+                    />
 
             </LinearLayout>
 
@@ -68,6 +78,7 @@
                 android:id="@+id/eventsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="bottom"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -79,37 +90,34 @@
                     android:gravity="bottom"
                     android:orientation="vertical">
 
-                <fragment
+                    <fragment
                     android:id="@+id/fragmentMap"
                     android:name="com.gdziejestmecz.gdzie_jest_mecz.MapViewFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:tag="fragmentMap" />
+                    android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:tag="fragmentMap"/>
 
                 <LinearLayout
-                    android:id="@+id/searchBar"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content" android:id="@+id/searchBar">
 
                     <EditText
-                        android:id="@+id/searchText"
-                        android:layout_width="match_parent"
+                        android:layout_width="248dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:hint="@string/search_hint"
-                        android:inputType="textPersonName" />
+                        android:id="@+id/searchText"
+                        android:layout_weight="4"
+                        android:inputType="textPersonName"
+                        android:hint="@string/search_hint"/>
 
                     <Button
-                        android:id="@+id/searchButton"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:onClick="searchLocation"
-                        android:text="@string/search_button" />
-                    </LinearLayout>
+                        android:layout_weight="0.5"
+                        android:text="@string/search_button" android:id="@+id/searchButton"
+                        android:onClick="searchLocation"/>
+                </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -121,11 +129,11 @@
                     android:gravity="bottom"
                     android:orientation="vertical">
 
+
                     <LinearLayout
                         android:id="@+id/eventListHeader"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:orientation="horizontal">
 
                         <TextView
@@ -156,83 +164,224 @@
                         android:id="@+id/matchListContent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:gravity="left"
+                        android:text="@string/closest_events"
+                        android:textColor="@color/blackyBlack"
+                        android:textSize="18sp"
+                        app:fontFamily="@font/montserrat"
+                        tools:textColor="@color/blackyBlack" />
 
-                    </ListView>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
 
         <RelativeLayout
             android:id="@+id/add_match_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:visibility="gone" >
+            android:background="@color/barerlyGray"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingLeft="20sp"
+                android:paddingTop="15sp"
+                android:paddingRight="20sp"
+                android:paddingBottom="15sp">
+
                 <Button
                     android:id="@+id/x_btn_add_match_panel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="X" />
+
+                    android:textSize="28sp"
+                    app:fontFamily="@font/montserrat"
+                    android:textColor="@color/lightGray"
+                    android:background="@android:color/transparent"
+                    android:text="X"
+                    android:layout_gravity="right"/>
+
                 <TextView
                     android:id="@+id/aep_title_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dodaj event:"
-                    app:fontFamily="@font/montserrat" />
+                    android:gravity="center_horizontal"
+                    android:text="Dodaj mecz: "
+                    android:textSize="32sp"
+                    app:fontFamily="@font/montserrat"
+                    android:layout_marginBottom="15dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:width="300sp"
+                    android:layout_marginBottom="20sp"
+                    android:background="@android:color/darker_gray" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Id meczu:"
-                    app:fontFamily="@font/montserrat" />
+                    android:layout_marginTop="20sp"
+                    android:text="Mecz:"
+                    android:textSize="22sp"
+                    app:fontFamily="@font/montserrat"
+                    android:paddingLeft="10dp"/>
 
-                <EditText
-                    android:id="@+id/input_matchId"
-                    android:layout_width="fill_parent"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="id meczu..."
-                    android:inputType="phone" />
+                    android:layout_marginRight="3dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp">
+
+                    <Spinner
+                        android:id="@+id/input_match"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="24sp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="5dp"
+                        app:fontFamily="@font/montserrat"
+                        android:hint="Wybierz mecz..."
+                        android:background="@drawable/spiner_background"
+                        android:elevation="6dp"
+                        />
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_launcher"
+                        android:paddingRight="5dp"
+                        android:elevation="7dp"/>
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/textView4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="ID pubu:"
+                    android:layout_marginTop="20sp"
+                    android:text="Pub:"
+                    android:textSize="22sp"
+                    android:paddingLeft="10dp"
                     app:fontFamily="@font/montserrat" />
 
-                <EditText
-                    android:id="@+id/input_pubId"
-                    android:layout_width="fill_parent"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="id pubu..."
-                    android:inputType="phone" />
+                    android:layout_marginRight="3dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingBottom="8dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp">
+                    <Spinner
+                        android:id="@+id/input_pub"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="5dp"
+                        android:hint="Wybierz pub..."
+                        android:textSize="24sp"
+                        app:fontFamily="@font/montserrat"
+                        android:background="@drawable/spiner_background"
+                        android:elevation="6dp"/>
+
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_launcher"
+                        android:paddingRight="5dp"
+                        android:elevation="7dp"/>
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/textView5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Dodatkowy opis:"
+                    android:layout_marginTop="20sp"
+                    android:textSize="22sp"
+                    android:paddingLeft="10dp"
                     app:fontFamily="@font/montserrat" />
 
-                <EditText
-                    android:id="@+id/input_desc"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="darmowe piwko?..."/>
 
-                <Button
-                    android:id="@+id/add_btn_add_match_panel"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="Dodaj" />
+                    android:layout_marginRight="3dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp">
+
+                <EditText
+                        android:id="@+id/input_desc"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        app:fontFamily="@font/montserrat"
+                        android:hint="darmowe piwko?..."
+                        android:background="@drawable/spiner_background"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="5dp"
+                        android:elevation="6dp"/>
+               </RelativeLayout>
+              <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="3dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:layout_weight="1">
+               
+                <Button
+                        android:paddingBottom="6dp"
+                        android:paddingTop="5dp"
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:id="@+id/add_btn_add_match_panel"
+                        android:drawableLeft="@drawable/ic_plus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/spiner_background"
+                        android:backgroundTint="@color/wineRed"
+                        android:textColor="@color/boneWhite"
+                        android:gravity="center"
+                        android:layout_gravity="bottom|center"
+                        android:textAllCaps="false"
+                        android:text="           Dodaj  "
+                        android:elevation="10dp" />
+                 </RelativeLayout>
 
                 <RelativeLayout
                     android:id="@+id/loadingAddMatch"
@@ -246,59 +395,131 @@
                         android:layout_height="wrap_content"
                         android:indeterminate="true" />
                 </RelativeLayout>
-
+                
             </LinearLayout>
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/add_pub_panel"
+    <RelativeLayout
+        android:id="@+id/add_pub_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/barerlyGray"
+        android:visibility="gone">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/white"
-            android:visibility="gone" >
+            android:orientation="vertical"
+            android:paddingLeft="20sp"
+            android:paddingTop="15sp"
+            android:paddingRight="20sp"
+            android:paddingBottom="15sp">
 
-            <LinearLayout
+            <Button
+                android:id="@+id/x_btn_add_pub_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:textSize="28sp"
+                app:fontFamily="@font/montserrat"
+                android:textColor="@color/lightGray"
+                android:background="@android:color/transparent"
+                android:text="X"
+                android:layout_gravity="right"/>
+
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-                <Button
-                    android:id="@+id/x_btn_add_pub_panel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="X" />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Dodaj pub:"
-                    app:fontFamily="@font/montserrat" />
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Dodaj pub:"
+                android:textSize="32sp"
+                app:fontFamily="@font/montserrat"
+                android:layout_marginBottom="15dp"/>
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Nazwa lokalu:"
-                    app:fontFamily="@font/montserrat" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:width="300sp"
+                android:layout_marginBottom="20sp"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                android:text="Nazwa lokalu:"
+                android:textSize="22sp"
+                app:fontFamily="@font/montserrat"
+                android:paddingLeft="10dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingBottom="15dp"
+                android:paddingTop="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
 
                 <EditText
                     android:id="@+id/input_pub_name"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    app:fontFamily="@font/montserrat"
                     android:hint="np. Piwoteka, Biblioteka..."
-                    android:inputType="phone" />
+                    android:background="@drawable/spiner_background"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="5dp"
+                    android:elevation="6dp"/>
+            </RelativeLayout>
 
-                <!-- insert mapfragment here -->
+            <fragment
+                android:id="@+id/fragmentMap2"
+                android:name="com.gdziejestmecz.gdzie_jest_mecz.MapViewFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:tag="fragmentMap2"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp"
+                android:paddingTop="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
                 <Button
+                    android:paddingBottom="6dp"
+                    android:paddingTop="5dp"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     android:id="@+id/add_btn_add_pub_panel"
+                    android:drawableLeft="@drawable/ic_plus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Dodaj" />
+                    android:background="@drawable/spiner_background"
+                    android:backgroundTint="@color/wineRed"
+                    android:textColor="@color/boneWhite"
+                    android:gravity="center"
+                    android:layout_gravity="bottom|center"
+                    android:textAllCaps="false"
+                    android:text="           Dodaj  "
+                    android:elevation="10dp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
 
-
-
-            </LinearLayout>
-        </RelativeLayout>
     </RelativeLayout>
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
