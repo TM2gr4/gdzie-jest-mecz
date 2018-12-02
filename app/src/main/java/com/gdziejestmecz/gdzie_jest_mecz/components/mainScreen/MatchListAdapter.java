@@ -18,7 +18,7 @@ import com.daimajia.swipe.SwipeLayout;
 import com.gdziejestmecz.gdzie_jest_mecz.R;
 import com.gdziejestmecz.gdzie_jest_mecz.constants.Colors;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.DownloadImageTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -57,11 +57,8 @@ public class MatchListAdapter extends ArrayAdapter<Match> {
         holder.getHomeTeamLabel().setText(match.getHomeTeam().getName());
         holder.getAwayTeamLabel().setText(match.getAwayTeam().getName());
 
-//        new DownloadImageTask((ImageView) convertView.findViewById(R.id.home_team_logo))
-//                .execute(match.getHomeTeam().getLogoURL());
-//
-//        new DownloadImageTask((ImageView) convertView.findViewById(R.id.away_team_logo))
-//                .execute(match.getAwayTeam().getLogoURL());
+        Picasso.get().load(match.getHomeTeam().getLogoURL()).into((ImageView) convertView.findViewById(R.id.home_team_logo));
+        Picasso.get().load(match.getAwayTeam().getLogoURL()).into((ImageView) convertView.findViewById(R.id.away_team_logo));
 
         LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
         SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);

@@ -1,24 +1,15 @@
 package com.gdziejestmecz.gdzie_jest_mecz.components.watchedMatchesScreen;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Handler;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.daimajia.swipe.SwipeLayout;
 import com.gdziejestmecz.gdzie_jest_mecz.R;
-import com.gdziejestmecz.gdzie_jest_mecz.constants.Colors;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.DownloadImageTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -54,11 +45,8 @@ public class WatchedMatchesListAdapter extends ArrayAdapter<Match> {
         holder.getAwayTeamLabel().setText(match.getAwayTeam().getName());
         holder.getPubsCount().setText(Integer.toString(match.getPubs().size()));
 
-        new DownloadImageTask((ImageView) convertView.findViewById(R.id.home_team_logo))
-                .execute(match.getHomeTeam().getLogoURL());
-
-        new DownloadImageTask((ImageView) convertView.findViewById(R.id.away_team_logo))
-                .execute(match.getAwayTeam().getLogoURL());
+        Picasso.get().load(match.getHomeTeam().getLogoURL()).into((ImageView) convertView.findViewById(R.id.home_team_logo));
+        Picasso.get().load(match.getAwayTeam().getLogoURL()).into((ImageView) convertView.findViewById(R.id.away_team_logo));
 
         return convertView;
     }
