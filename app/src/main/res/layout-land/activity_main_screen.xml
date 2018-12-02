@@ -44,7 +44,7 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginRight="10dp"
                     android:width="27dp"
-                    android:background="@color/barerlyGray"
+                    android:background="drawable/ic_menu_black_24dp"
                     android:gravity="left|center_vertical" />
 
                 <ImageView
