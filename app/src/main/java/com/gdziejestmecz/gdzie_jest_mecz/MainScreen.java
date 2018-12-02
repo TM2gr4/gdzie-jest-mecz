@@ -28,6 +28,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,9 +72,11 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private ImageView userAvatarImageView;
     private GoogleApiClient googleApiClient;
 
+    private MapViewFragment mapViewFragment;
     private DrawerLayout drawer_layout;
     private NavigationView sideBar;
     private Button plusBtn, menuBtn;
+    private RelativeLayout loadingMatches;
     private ActionBarDrawerToggle mToogle;
 
     private ArrayList<Match> matchList;
@@ -86,11 +89,12 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private Spinner input_match, input_pub;
     private Button addMatchButton;
     private Button closeAddMatchPanel;
-    private MapViewFragment mapViewFragment;
+    private RelativeLayout progressBarAddMatch;
 
     private View addPubPanel;
     private Button addPubButton;
     private Button closeAddPubPanel;
+
 
     private static final String[] INITIAL_PERMS={
         Manifest.permission.ACCESS_FINE_LOCATION
@@ -125,6 +129,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
 
     private void getAndRenderMatches() {
+        this.loadingMatches.setVisibility(View.VISIBLE);
+
         RetrieveMatches retrieveMatches = new RetrieveMatches();
         retrieveMatches.delegate = this;
 
@@ -171,6 +177,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                 Toast.makeText(MainScreen.this, "Adding match", Toast.LENGTH_SHORT).show();
 
                 addMatchButton.setEnabled(false);
+                closeAddMatchPanel.setEnabled(false);
+
                 prepareMatchToAdd();
             }
         });
@@ -190,6 +198,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     }
 
     private void prepareMatchToAdd() {
+        progressBarAddMatch.setVisibility(View.VISIBLE);
+
         Match match = (Match) input_match.getSelectedItem();
         Pub pub = (Pub) input_pub.getSelectedItem();
         String desc = input_desc.getText().toString();
@@ -202,12 +212,14 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private void initUIElements() {
         this.drawer_layout = findViewById(R.id.drawer_layout);
         this.sideBar = findViewById(R.id.nav_view);
+        this.loadingMatches = findViewById(R.id.loading_matches);
 
         this.addMatchPanel = findViewById(R.id.add_match_panel);
         this.input_match = findViewById(R.id.input_match);
         this.input_pub = findViewById(R.id.input_pub);
         this.input_desc = findViewById(R.id.input_desc);
         this.addMatchButton = findViewById(R.id.add_btn_add_match_panel);
+        this.progressBarAddMatch = findViewById(R.id.loadingAddMatch);
         this.closeAddMatchPanel = findViewById(R.id.x_btn_add_match_panel);
 
         this.addPubPanel = findViewById(R.id.add_pub_panel);
@@ -325,6 +337,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
         matchListContent.setAdapter(new MatchListAdapter(this, getMatchesWithNonZeroPubsCount(this.matchList)));
         input_match.setAdapter(new MatchSpinnerListAdapter(this, this.matchList));
+        this.loadingMatches.setVisibility(View.GONE);
     }
 
     private ArrayList<Match> getMatchesWithNonZeroPubsCount(ArrayList<Match> matchList) {
@@ -423,16 +436,23 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     public void postMatchProcessFinished(boolean isSuccessful) {
         if (isSuccessful) {
             Toast.makeText(this, "Odświeżam liste meczów...", Toast.LENGTH_SHORT).show();
-            clearMatchList();
+            hideMatchList();
             getAndRenderMatches();
+            showMatchList();
             slidePanel(addMatchPanel);
         } else {
             Toast.makeText(this, "Ups, nie mozna dodać meczu :-(", Toast.LENGTH_SHORT).show();
         }
-        addMatchButton.setEnabled(false);
+        progressBarAddMatch.setVisibility(View.GONE);
+        
+        addMatchButton.setEnabled(true);
+        closeAddMatchPanel.setEnabled(true);
     }
 
-    private void clearMatchList() {
-        matchListContent.setVisibility(0);
+    private void hideMatchList() {
+        matchListContent.setVisibility(View.GONE);
+    }
+    private void showMatchList() {
+        matchListContent.setVisibility(View.VISIBLE);
     }
 }
