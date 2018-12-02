@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.gdziejestmecz.gdzie_jest_mecz.components.watchedMatchesScreen.WatchedMatchesListAdapter;
@@ -21,6 +22,7 @@ public class WatchedMatchesScreen extends Activity implements AsyncWatchedMatche
 
     private ArrayList<Match> watchedMatchesList;
     private ListView watchedMatchesListContent;
+    private RelativeLayout loadingMatches;
     private Button close_btn;
 
     @Override
@@ -35,6 +37,7 @@ public class WatchedMatchesScreen extends Activity implements AsyncWatchedMatche
     private void initUI() {
         this.watchedMatchesListContent = findViewById(R.id.watched_matches_list);
         this.close_btn = findViewById(R.id.watched_matches_close_btn);
+        this.loadingMatches = findViewById(R.id.loading_matches);
 
         addEventListeners();
     }
@@ -48,6 +51,8 @@ public class WatchedMatchesScreen extends Activity implements AsyncWatchedMatche
     }
 
     private void getAndRenderMatches() {
+        this.loadingMatches.setVisibility(View.VISIBLE);
+
         RetrieveWatchedMatches retrieveWatchedMatches = new RetrieveWatchedMatches(999);
         retrieveWatchedMatches.delegate = this;
 
@@ -59,5 +64,7 @@ public class WatchedMatchesScreen extends Activity implements AsyncWatchedMatche
         Log.e("[OK]", "Got watchedMatches!");
         this.watchedMatchesList = matchList;
         watchedMatchesListContent.setAdapter(new WatchedMatchesListAdapter(this, this.watchedMatchesList));
+
+        this.loadingMatches.setVisibility(View.GONE);
     }
 }

@@ -36,10 +36,10 @@
             android:tag="Hover"
             android:textColor="@color/boneWhite"
             android:textSize="18sp" />
-        </LinearLayout>
+    </LinearLayout>
 
     <android.support.v7.widget.CardView
-        android:id="@+id/event_card"
+        android:id="@+id/match_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
@@ -179,10 +179,21 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="bottom"
+                    android:orientation="vertical">
+
+                    <ListView
+                        android:id="@+id/pubs_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
-
     </android.support.v7.widget.CardView>
 </com.daimajia.swipe.SwipeLayout>
 </LinearLayout>

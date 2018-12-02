@@ -87,17 +87,28 @@
                     android:layout_height="200dp" android:tag="fragmentMap"/>
 
             <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/searchBar">
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" 
+                android:id="@+id/searchBar">
 
-                <EditText
+                
+                <LinearLayout
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <EditText
                         android:layout_width="248dp"
                         android:layout_height="wrap_content"
                         android:id="@+id/searchText"
                         android:layout_weight="0.5"
                         android:inputType="textPersonName"
                         android:hint="@string/search_hint"/>
+
+                </LinearLayout>
+
 
                 <Button
                         android:layout_width="wrap_content"
@@ -126,7 +137,18 @@
                         tools:textColor="@color/blackyBlack" />
 
                 </LinearLayout>
+                <RelativeLayout
+                    android:id="@+id/loading_matches"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="gone">
 
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true" />
+                </RelativeLayout>
                 <ListView
                     android:id="@+id/matchListContent"
                     android:layout_width="match_parent"
@@ -301,6 +323,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 app:fontFamily="@font/montserrat"
+
                 android:hint="darmowe piwko?..."
                 android:background="@drawable/spiner_background"
                 android:paddingBottom="5dp"
@@ -321,6 +344,12 @@
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp"
                 android:layout_weight="1">
+              <LinearLayout
+                    android:id="@+id/loadingPanel"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
             <Button
                 android:paddingBottom="6dp"
                 android:paddingTop="5dp"
@@ -339,7 +368,24 @@
                 android:textAllCaps="false"
                 android:text="           Dodaj  "
                 android:elevation="10dp" />
+                
             </RelativeLayout>
+          <RelativeLayout
+                        android:id="@+id/loadingAddMatch"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone">
+
+                        <ProgressBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true" />
+                    </RelativeLayout>
+              </LinearLayout>
+
+                
+           
         </LinearLayout>
     </RelativeLayout>
 

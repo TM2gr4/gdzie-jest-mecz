@@ -129,15 +129,40 @@
                     android:gravity="bottom"
                     android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/eventListHeader"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/closestEventsLabel"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/eventListHeader"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/closestEventsLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:text="@string/closest_events"
+                            android:textColor="@color/blackyBlack"
+                            android:textSize="18sp"
+                            app:fontFamily="@font/montserrat"
+                            tools:textColor="@color/blackyBlack" />
+
+                    </LinearLayout>
+                    <RelativeLayout
+                        android:id="@+id/loading_matches"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone">
+
+                        <ProgressBar
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:indeterminate="true" />
+                    </RelativeLayout>
+                    <ListView
+                        android:id="@+id/matchListContent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="left"
                         android:text="@string/closest_events"
@@ -157,6 +182,8 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
+
         <RelativeLayout
             android:id="@+id/add_match_panel"
             android:layout_width="match_parent"
@@ -305,6 +332,7 @@
                     android:paddingLeft="10dp"
                     app:fontFamily="@font/montserrat" />
 
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -317,7 +345,7 @@
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp">
 
-                    <EditText
+                <EditText
                         android:id="@+id/input_desc"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -329,9 +357,8 @@
                         android:paddingTop="5dp"
                         android:paddingLeft="5dp"
                         android:elevation="6dp"/>
-                </RelativeLayout>
-
-                <RelativeLayout
+               </RelativeLayout>
+              <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="3dp"
@@ -343,7 +370,8 @@
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:layout_weight="1">
-                    <Button
+               
+                <Button
                         android:paddingBottom="6dp"
                         android:paddingTop="5dp"
                         android:paddingLeft="3dp"
@@ -361,7 +389,28 @@
                         android:textAllCaps="false"
                         android:text="           Dodaj  "
                         android:elevation="10dp" />
+                 </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/loadingAddMatch"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true" />
                 </RelativeLayout>
+
+
+                    
+               
+
+                
+                    
+                
             </LinearLayout>
         </RelativeLayout>
 
