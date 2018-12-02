@@ -57,10 +57,12 @@
 
     <ImageView
         android:id="@+id/btn_google"
-        android:layout_width="279dp"
-        android:layout_height="50dp"
+        android:layout_width="272dp"
+        android:layout_height="42dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
+        android:background="@drawable/spiner_background"
+        android:elevation="6dp"
         android:src="@drawable/google_sing_in_button" />
 
     <TextView
@@ -73,6 +75,7 @@
         android:gravity="bottom"
         android:textAlignment="center"
         android:text="ChoNaMecz Team 2018 \n Wszelkie prawa zastrzeżone"
-        android:textColor="#C3c3c3" />
+        android:textColor="#C3c3c3"
+        android:layout_marginBottom="10dp"/>
 
 </LinearLayout>
