@@ -104,72 +104,80 @@
                     android:layout_height="wrap_content" android:id="@+id/searchBar">
 
                     <EditText
-                        android:layout_width="248dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/searchText"
-                        android:layout_weight="4"
-                        android:inputType="textPersonName"
-                        android:hint="@string/search_hint"/>
+                            android:layout_width="170dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/searchText"
+                            android:layout_weight="4"
+                            android:inputType="textPersonName"
+                            android:hint="@string/search_hint"/>
+
+                    <Switch
+                            android:text="@string/switchMecz"
+                            android:layout_width="90dp"
+                            android:layout_height="wrap_content" android:id="@+id/searchTypeSwitch"
+                            android:layout_weight="4" android:textOn="@string/switchPub"
+                            android:textOff="@string/switchMecz"/>
 
                     <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:text="@string/search_button" android:id="@+id/searchButton"
-                        android:onClick="searchLocation"/>
+                            android:layout_width="55dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:id="@+id/searchButton"
+                            android:onClick="handleSearchButton"
+                            android:drawableEnd="@android:drawable/ic_menu_search"/>
                 </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/events"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:baselineAligned="false"
-                    android:gravity="bottom"
-                    android:orientation="vertical">
+                        android:id="@+id/events"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:gravity="bottom"
+                        android:orientation="vertical" android:layout_gravity="top">
 
 
                     <LinearLayout
-                        android:id="@+id/eventListHeader"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                            android:id="@+id/eventListHeader"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/closestEventsLabel"
-                            android:layout_width="wrap_content"
+                                android:id="@+id/closestEventsLabel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="left"
+                                android:text="@string/closest_events"
+                                android:textColor="@color/blackyBlack"
+                                android:textSize="18sp"
+                                app:fontFamily="@font/montserrat"
+                                tools:textColor="@color/blackyBlack"/>
+
+                    </LinearLayout>
+                    <RelativeLayout
+                            android:id="@+id/loading_matches"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:visibility="gone">
+
+                        <ProgressBar
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:indeterminate="true"/>
+                    </RelativeLayout>
+                    <ListView
+                            android:id="@+id/matchListContent"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="left"
                             android:text="@string/closest_events"
                             android:textColor="@color/blackyBlack"
                             android:textSize="18sp"
                             app:fontFamily="@font/montserrat"
-                            tools:textColor="@color/blackyBlack" />
-
-                    </LinearLayout>
-                    <RelativeLayout
-                        android:id="@+id/loading_matches"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:visibility="gone">
-
-                        <ProgressBar
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:indeterminate="true" />
-                    </RelativeLayout>
-                    <ListView
-                        android:id="@+id/matchListContent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:text="@string/closest_events"
-                        android:textColor="@color/blackyBlack"
-                        android:textSize="18sp"
-                        app:fontFamily="@font/montserrat"
-                        tools:textColor="@color/blackyBlack" />
+                            tools:textColor="@color/blackyBlack"/>
 
                 </LinearLayout>
             </LinearLayout>

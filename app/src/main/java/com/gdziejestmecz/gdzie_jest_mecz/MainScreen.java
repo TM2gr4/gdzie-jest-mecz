@@ -21,15 +21,7 @@ import android.util.Log;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.PopupMenu;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -99,6 +91,10 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private View addPubPanel;
     private Button addPubButton;
     private Button closeAddPubPanel;
+
+    private EditText searchBar;
+    private Switch searchTypeSwitch;
+    private boolean doSearchPubs = false;
 
 
     private static final String[] INITIAL_PERMS={
@@ -206,6 +202,13 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                 Toast.makeText(MainScreen.this, "adding pub", Toast.LENGTH_SHORT).show();
             }
         });
+
+        searchTypeSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handleSearchSwitchAction();
+            }
+        });
     }
 
     private void prepareMatchToAdd() {
@@ -246,6 +249,9 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.userFirstnameLabel = headerLayout.findViewById(R.id.userFirstnameLabel);
         this.userEmailLabel = headerLayout.findViewById(R.id.userEmailLabel);
         this.userAvatarImageView = headerLayout.findViewById(R.id.userAvatarImageView);
+
+        this.searchTypeSwitch = findViewById(R.id.searchTypeSwitch);
+        this.searchBar = findViewById(R.id.searchText);
     }
 
     private void initGoogleAuth() {
@@ -373,22 +379,28 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         }
     }
 
-    public void searchLocation(View view) {
-        EditText locationSearch = (EditText) findViewById(R.id.searchText);
-        final String location = locationSearch.getText().toString();
+    public void handleSearchButton(View view){
+        String searchFor = searchBar.getText().toString();
+            if (doSearchPubs) {
+                searchByPubs(searchFor);
+            } else {
+                searchByEvents(searchFor);
+            }
+    }
+
+    public void searchLocation(String location) {
         Object[] dataTransfer = new Object[2];
         dataTransfer[0] = getApplicationContext();
         dataTransfer[1] = location;
 
-        if(!location.equals("")) {
-            LocationFinder locationFinder = new LocationFinder(new AsyncLocationFinderResponse() {
-                @Override
-                public void onLocationSeachCompleted(List<Address> addressList) {
-                    displayLocations(addressList);
-                }
-            });
-            locationFinder.execute(dataTransfer);
-        }
+        LocationFinder locationFinder = new LocationFinder(new AsyncLocationFinderResponse() {
+            @Override
+            public void onLocationSeachCompleted(List<Address> addressList) {
+                displayLocations(addressList);
+            }
+        });
+        locationFinder.execute(dataTransfer);
+
     }
 
     private void displayLocations(final List<Address> incomingAddressList){
@@ -413,6 +425,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             builder.setItems(extractedAddressNames,new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
                     LatLng latLng = new LatLng(incomingAddressList.get(item).getLatitude(), incomingAddressList.get(item).getLongitude());
+                    mapViewFragment.clearMarkers();
                     mapViewFragment.drawMarker(latLng,incomingAddressList.get(item).getAddressLine(0), true);
                 }
             });
@@ -501,5 +514,60 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString("access_token", token.getRefreshToken()).apply();
         getAndRenderMatches();
         getPubs();
+    }
+
+    private void handleSearchSwitchAction(){
+        doSearchPubs = searchTypeSwitch.isChecked();
+        if(doSearchPubs) {
+            searchTypeSwitch.setText(searchTypeSwitch.getTextOn());
+        } else {
+            searchTypeSwitch.setText(searchTypeSwitch.getTextOff());
+        }
+    }
+
+    private void searchByEvents(String team){
+        ArrayList<Match> filteredMatch = new ArrayList<>();
+        if(matchList!=null && !matchList.isEmpty()) {
+            if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null) {
+                mapViewFragment = (MapViewFragment) getSupportFragmentManager().findFragmentByTag("fragmentMap");
+                mapViewFragment.clearMarkers();
+            }
+            if(!team.equals("")) {
+                for (Match match : matchList) {
+                    if (match.getAwayTeam().getName().toLowerCase().contains(team.toLowerCase()) || match.getHomeTeam().getName().toLowerCase().contains(team.toLowerCase()))
+                        filteredMatch.add(match);
+                }
+                matchListContent.setAdapter(new MatchListAdapter(this, getMatchesWithNonZeroPubsCount(filteredMatch)));
+                input_match.setAdapter(new MatchSpinnerListAdapter(this, filteredMatch));
+            } else {
+                matchListContent.setAdapter(new MatchListAdapter(this, getMatchesWithNonZeroPubsCount(matchList)));
+                input_match.setAdapter(new MatchSpinnerListAdapter(this, matchList));
+            }
+        }
+    }
+
+    private void searchByPubs(String place){
+        ArrayList<Match> filteredMatch = new ArrayList<>();
+        if(matchList!=null && !matchList.isEmpty()) {
+            if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null) {
+                mapViewFragment = (MapViewFragment) getSupportFragmentManager().findFragmentByTag("fragmentMap");
+                mapViewFragment.clearMarkers();
+            }
+            if(!place.equals("")) {
+                for (Match match : matchList) {
+                   for(Pub pub : match.getPubs()){
+                       if(pub.getName().toLowerCase().contains(place.toLowerCase())) {
+                           filteredMatch.add(match);
+                           break;
+                       }
+                   }
+                }
+                matchListContent.setAdapter(new MatchListAdapter(this, getMatchesWithNonZeroPubsCount(filteredMatch)));
+                input_match.setAdapter(new MatchSpinnerListAdapter(this, filteredMatch));
+            } else {
+                matchListContent.setAdapter(new MatchListAdapter(this, getMatchesWithNonZeroPubsCount(matchList)));
+                input_match.setAdapter(new MatchSpinnerListAdapter(this, matchList));
+            }
+        }
     }
 }
