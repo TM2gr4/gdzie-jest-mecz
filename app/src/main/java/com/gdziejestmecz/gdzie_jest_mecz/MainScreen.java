@@ -1,14 +1,11 @@
 package com.gdziejestmecz.gdzie_jest_mecz;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Address;
-import android.location.Geocoder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -375,43 +372,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-/*
-    @SuppressLint("StaticFieldLeak")
-    public void searchLocation(View view) {
-        EditText locationSearch = (EditText) findViewById(R.id.searchText);
-        final String location = locationSearch.getText().toString();
-
-        if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null) {
-            mapViewFragment = (MapViewFragment) getSupportFragmentManager().findFragmentByTag("fragmentMap");
-        }
-
-        if(location != null && !location.equals("")) {
-            new AsyncTask<Void, Void, List<Address>>() {
-                @Override
-                protected List<Address> doInBackground(Void... voids) {
-                    List<Address> addressList = null;
-
-                    Geocoder geocoder = new Geocoder(getApplicationContext());
-                    try {
-                        addressList = geocoder.getFromLocationName(location, 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return addressList;
-                }
-
-                public void onPostExecute(List<Address> addressList) {
-                    Address address;
-                    if (addressList != null && addressList.size() > 0) {
-                        address = addressList.get(0);
-                        mapViewFragment.drawMarker(new LatLng(address.getLatitude(), address.getLongitude()), location, true);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Nie znaleziono podanego miejsca", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }.execute();
-        }
-    }*/
 
     public void searchLocation(View view) {
         EditText locationSearch = (EditText) findViewById(R.id.searchText);
