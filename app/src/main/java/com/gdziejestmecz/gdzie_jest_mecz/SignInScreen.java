@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostGoogleTokenResponse;
@@ -28,7 +29,7 @@ public class SignInScreen extends FragmentActivity implements GoogleApiClient.On
     public static final int REQUEST_CODE = 777;
     private GoogleMap mMap;
     private GoogleApiClient googleApiClient;
-    private ImageView btn_google, btn_fb;
+    private LinearLayout btn_google;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -26,6 +26,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -81,7 +82,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private MapViewFragment mapViewFragment;
     private DrawerLayout drawer_layout;
     private NavigationView sideBar;
-    private Button plusBtn, menuBtn;
+    private Button  menuBtn;
+    private ImageButton plusBtn;
     private RelativeLayout loadingMatches;
     private ActionBarDrawerToggle mToogle;
 
