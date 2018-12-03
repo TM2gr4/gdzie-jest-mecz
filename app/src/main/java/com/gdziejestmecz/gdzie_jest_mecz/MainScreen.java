@@ -3,6 +3,7 @@ package com.gdziejestmecz.gdzie_jest_mecz;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Address;
@@ -18,10 +19,9 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -41,6 +41,8 @@ import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.MatchSpinnerListA
 import com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen.PubSpinnerListAdapter;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.AsyncLocationFinderResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.LocationFinder;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncMatchListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostGoogleTokenResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostMatchResponse;
@@ -373,7 +375,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
+/*
     @SuppressLint("StaticFieldLeak")
     public void searchLocation(View view) {
         EditText locationSearch = (EditText) findViewById(R.id.searchText);
@@ -402,12 +404,69 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                     Address address;
                     if (addressList != null && addressList.size() > 0) {
                         address = addressList.get(0);
-                        mapViewFragment.drawMarker(new LatLng(address.getLatitude(), address.getLongitude()), location);
+                        mapViewFragment.drawMarker(new LatLng(address.getLatitude(), address.getLongitude()), location, true);
                     } else {
                         Toast.makeText(getApplicationContext(), "Nie znaleziono podanego miejsca", Toast.LENGTH_SHORT).show();
                     }
                 }
             }.execute();
+        }
+    }*/
+
+    public void searchLocation(View view) {
+        EditText locationSearch = (EditText) findViewById(R.id.searchText);
+        final String location = locationSearch.getText().toString();
+        Object[] dataTransfer = new Object[2];
+        dataTransfer[0] = getApplicationContext();
+        dataTransfer[1] = location;
+
+        if(!location.equals("")) {
+            LocationFinder locationFinder = new LocationFinder(new AsyncLocationFinderResponse() {
+                @Override
+                public void onLocationSeachCompleted(List<Address> addressList) {
+                    displayLocations(addressList);
+                }
+            });
+            locationFinder.execute(dataTransfer);
+        }
+    }
+
+    private void displayLocations(final List<Address> incomingAddressList){
+        if(incomingAddressList != null && incomingAddressList.size() > 0) {
+            String[] extractedAddressNames;
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainScreen.this);
+            final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
+            View viewInflated = LayoutInflater.from(getApplicationContext()).inflate(R.layout.address_list_popup, viewGroup, false);
+
+            if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null) {
+                mapViewFragment = (MapViewFragment) getSupportFragmentManager().findFragmentByTag("fragmentMap");
+            }
+
+            extractedAddressNames = new String[incomingAddressList.size()];
+            for(int i = 0; i < incomingAddressList.size(); i++){
+                extractedAddressNames[i] = incomingAddressList.get(i).getAddressLine(0);
+            }
+
+            builder.setTitle("Znalezione miejsca");
+            builder.setView(viewInflated);
+
+            builder.setItems(extractedAddressNames,new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    LatLng latLng = new LatLng(incomingAddressList.get(item).getLatitude(), incomingAddressList.get(item).getLongitude());
+                    mapViewFragment.drawMarker(latLng,incomingAddressList.get(item).getAddressLine(0), true);
+                }
+            });
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Nie znaleziono podanego miejsca", Toast.LENGTH_SHORT).show();
         }
     }
 
