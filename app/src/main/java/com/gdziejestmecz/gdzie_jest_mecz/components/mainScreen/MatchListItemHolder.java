@@ -1,6 +1,7 @@
 package com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen;
 
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
@@ -9,9 +10,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.gdziejestmecz.gdzie_jest_mecz.MapViewFragment;
 import com.gdziejestmecz.gdzie_jest_mecz.R;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 
+import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
+import com.google.android.gms.maps.model.LatLng;
 import org.w3c.dom.Text;
 
 public class MatchListItemHolder {
@@ -25,6 +29,7 @@ public class MatchListItemHolder {
                         awayTeamLogo = null;
     private CardView card = null;
     private ListView pubsList = null;
+    private MapViewFragment mapViewFragment = null;
 
     private boolean isPubsListExpanded;
 
@@ -47,6 +52,15 @@ public class MatchListItemHolder {
                     getPubsList().setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, theSizeIWant));
                 }
                 isPubsListExpanded = !isPubsListExpanded;
+
+                if (((FragmentActivity) context).getSupportFragmentManager().findFragmentByTag("fragmentMap") != null) {
+                    mapViewFragment = (MapViewFragment) ((FragmentActivity) context).getSupportFragmentManager().findFragmentByTag("fragmentMap");
+                    mapViewFragment.clearMarkers();
+                    for (Pub pub : match.getPubs()) {
+                        if (isPubsListExpanded)
+                            mapViewFragment.drawMarker(new LatLng(pub.getLatitude(), pub.getLongitude()), pub.getName(), false);
+                    }
+                }
             };
         });
     }

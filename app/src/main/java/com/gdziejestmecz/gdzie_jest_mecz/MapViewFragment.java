@@ -38,7 +38,7 @@ public class MapViewFragment extends Fragment {
     private GoogleMap googleMap;
 
     private boolean mLocationPermissionGranted;
-    private final int DEFAULT_ZOOM = 15;
+    private final int DEFAULT_ZOOM = 12;
     private boolean firstPositionUpdate = true;
 
     final static String[] INITIAL_PERMS = {
@@ -141,11 +141,18 @@ public class MapViewFragment extends Fragment {
 
     }
 
-    public void drawMarker(LatLng location, String locationName) {
+    public void drawMarker(LatLng location, String locationName, boolean doFocus) {
+        if (googleMap != null) {
+            googleMap.addMarker(new MarkerOptions().position(location).title(locationName));
+
+            if(doFocus)
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location,googleMap.getCameraPosition().zoom));
+        }
+    }
+
+    public void clearMarkers(){
         if (googleMap != null) {
             googleMap.clear();
-            googleMap.addMarker(new MarkerOptions().position(location).title(locationName));
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location,15));
         }
     }
 
