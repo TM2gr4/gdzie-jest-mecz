@@ -102,27 +102,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/searchText"
+                        android:layout_weight="4"
+                        android:background="@drawable/spiner_background"
+                        android:inputType="textPersonName"
+                        android:hint="@string/search_hint"
+                        android:paddingLeft="5dp"
+                        android:elevation="6dp"/>
+                    <Switch
+                        android:text="@string/switchMecz"
+                        android:layout_width="90dp"
+                        android:layout_height="wrap_content" android:id="@+id/searchTypeSwitch"
+                        android:elevation="6dp"
+                        android:background="@drawable/search_button_style"
+                        android:layout_weight="0.2" android:textOn="@string/switchPub" android:textOff="@string/switchMecz"/>
+                <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:src="@drawable/ic_search"
+                        android:background="@drawable/search_button_style"
+                        android:elevation="6dp"
+                        android:id="@+id/searchButton"
+                        android:onClick="handleSearchButton"/>
 
-                        <EditText
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:id="@+id/searchText"
-                            android:layout_weight="4"
-                            android:background="@drawable/spiner_background"
-                            android:inputType="textPersonName"
-                            android:hint="@string/search_hint"
-                            android:paddingLeft="5dp"
-                            android:elevation="6dp"/>
-
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.2"
-                            android:src="@drawable/ic_search"
-                            android:background="@drawable/search_button_style"
-                            android:elevation="6dp"
-                            android:id="@+id/searchButton"
-                            android:onClick="searchLocation" />
                     </LinearLayout>
             </LinearLayout>
 

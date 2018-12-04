@@ -9,4 +9,6 @@
     <string name="search_hint">Szukaj Lokacji</string>
     <string name="open">Open</string>
     <string name="closed">Closed</string>
+    <string name="switchMecz">Mecz</string>
+    <string name="switchPub">Pub</string>
 </resources>
