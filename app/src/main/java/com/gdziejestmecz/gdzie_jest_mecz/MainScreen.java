@@ -174,8 +174,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         addMatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "Adding match", Toast.LENGTH_SHORT).show();
-
                 addMatchButton.setEnabled(false);
                 closeAddMatchPanel.setEnabled(false);
 
@@ -185,14 +183,12 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         closeAddPubPanel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "closing addPubPanel", Toast.LENGTH_SHORT).show();
                 slidePanel(addPubPanel);
             }
         });
         addPubButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "adding pub", Toast.LENGTH_SHORT).show();
                 handleAddNewPubButton();
             }
         });
