@@ -134,6 +134,7 @@
                             android:elevation="6dp"
                             android:id="@+id/searchButton"
                             android:onClick="handleSearchButton"/>
+
                 </LinearLayout>
                 </LinearLayout>
 
@@ -154,16 +155,16 @@
                             android:orientation="horizontal">
 
                         <TextView
-                                android:id="@+id/closestEventsLabel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="left"
-                                android:text="@string/closest_events"
-                                android:textColor="@color/blackyBlack"
-                                android:textSize="18sp"
-                                app:fontFamily="@font/montserrat"
-                                tools:textColor="@color/blackyBlack"
-                                android:paddingLeft="5dp"/>
+                            android:id="@+id/closestEventsLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:text="@string/closest_events"
+                            android:textColor="@color/blackyBlack"
+                            android:textSize="18sp"
+                            app:fontFamily="@font/montserrat"
+                            tools:textColor="@color/blackyBlack"
+                            android:paddingLeft="5dp"/>
 
                     </LinearLayout>
                     <RelativeLayout
