@@ -8,8 +8,10 @@
         android:id="@+id/pub_name_spinner_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="18sp"
         android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingBottom="5dp"
         />
 
 </RelativeLayout>
