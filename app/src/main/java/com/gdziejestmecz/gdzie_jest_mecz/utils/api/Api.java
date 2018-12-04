@@ -100,4 +100,40 @@ public class Api {
         }
         return googleTokenResponse;
     }
+
+    public static boolean postPub(Pub pub){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("latitude", pub.getLatitude());
+            jsonObject.put("longitude", pub.getLongitude());
+            jsonObject.put("name", pub.getName());
+            jsonObject.put("number", pub.getNumber());
+            jsonObject.put("street", pub.getStreet());
+
+        }catch (JSONException e){
+            Log.e("JSON", "Couldn't create json out of envt object. " + e.getMessage());
+            return false;
+        }
+
+        RequestBody body = RequestBody.create(JSON, jsonObject.toString());
+        Request request = new Request.Builder()
+                .url(ServerInfo.getRootUrl() + ServerInfo.getEndpointPubs() + ServerInfo.getAdd())
+                .addHeader("Authorization" , "Bearer " + TokenStore.getAccessToken())
+                .post(body)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+
+            if (response.code() == 201 || response.code() == 200) {
+                return true;
+            } else {
+                Log.e("API_CALL", "POSTING PUB FAILED!!! BEACUSE response status code : " + response.code());
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d("API_CALL", "POSTING PUB FAILED!!! BEACUSE: " + e.getMessage());
+            return false;
+        }
+    }
 }
