@@ -32,19 +32,7 @@ import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.AsyncLocationFinderResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.LocationFinder;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncFavouriteMatchesListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncMatchListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostFavouriteMatchesResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostGoogleTokenResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostMatchResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPubListResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.GoogleTokenResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.PostGoogleToken;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.PostMatch;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrieveMatches;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.RetrievePubs;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.TokenStore;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.TokenType;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.*;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -63,6 +51,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
                                                             AsyncPubListResponse,
                                                             AsyncMatchListResponse,
                                                             AsyncPostMatchResponse,
+                                                            AsyncPostPubResponse,
                                                             NavigationView.OnNavigationItemSelectedListener,
                                                             AsyncPostGoogleTokenResponse {
 
@@ -93,11 +82,13 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private View addPubPanel;
     private Button addPubButton;
     private Button closeAddPubPanel;
+    private EditText inputPubLocalisation;
+    private EditText inputPubName;
+    private Address lastSearchedPub;
 
     private EditText searchBar;
     private Switch searchTypeSwitch;
     private boolean doSearchPubs = false;
-
 
     private static final String[] INITIAL_PERMS={
         Manifest.permission.ACCESS_FINE_LOCATION
@@ -181,8 +172,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         addMatchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "Adding match", Toast.LENGTH_SHORT).show();
-
                 addMatchButton.setEnabled(false);
                 closeAddMatchPanel.setEnabled(false);
 
@@ -192,14 +181,13 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         closeAddPubPanel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "closing addPubPanel", Toast.LENGTH_SHORT).show();
                 slidePanel(addPubPanel);
             }
         });
         addPubButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainScreen.this, "adding pub", Toast.LENGTH_SHORT).show();
+                handleAddNewPubButton();
             }
         });
 
@@ -239,6 +227,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.addPubPanel = findViewById(R.id.add_pub_panel);
         this.addPubButton = findViewById(R.id.add_btn_add_pub_panel);
         this.closeAddPubPanel = findViewById(R.id.x_btn_add_pub_panel);
+        this.inputPubLocalisation = findViewById(R.id.input_pub_localisation);
+        this.inputPubName = findViewById(R.id.input_pub_name);
 
         this.plusBtn = findViewById(R.id.plus_btn);
         this.menuBtn = findViewById(R.id.menuBtn);
@@ -391,19 +381,22 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             }
     }
 
-    public void searchLocation(String location) {
-        Object[] dataTransfer = new Object[2];
-        dataTransfer[0] = getApplicationContext();
-        dataTransfer[1] = location;
+    public void searchLocation(View view) {
+        String location = inputPubLocalisation.getText().toString();
 
-        LocationFinder locationFinder = new LocationFinder(new AsyncLocationFinderResponse() {
-            @Override
-            public void onLocationSeachCompleted(List<Address> addressList) {
-                displayLocations(addressList);
-            }
-        });
-        locationFinder.execute(dataTransfer);
+        if(!location.equals("")) {
+            Object[] dataTransfer = new Object[2];
+            dataTransfer[0] = getApplicationContext();
+            dataTransfer[1] = location;
 
+            LocationFinder locationFinder = new LocationFinder(new AsyncLocationFinderResponse() {
+                @Override
+                public void onLocationSeachCompleted(List<Address> addressList) {
+                    displayLocations(addressList);
+                }
+            });
+            locationFinder.execute(dataTransfer);
+        }
     }
 
     private void displayLocations(final List<Address> incomingAddressList){
@@ -413,8 +406,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
             View viewInflated = LayoutInflater.from(getApplicationContext()).inflate(R.layout.address_list_popup, viewGroup, false);
 
-            if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null) {
-                mapViewFragment = (MapViewFragment) getSupportFragmentManager().findFragmentByTag("fragmentMap");
+            if(getSupportFragmentManager().findFragmentByTag("fragmentMap2")!=null) {
+                mapViewFragment = (MapViewFragment) getSupportFragmentManager().findFragmentByTag("fragmentMap2");
             }
 
             extractedAddressNames = new String[incomingAddressList.size()];
@@ -427,9 +420,11 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
             builder.setItems(extractedAddressNames,new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int item) {
-                    LatLng latLng = new LatLng(incomingAddressList.get(item).getLatitude(), incomingAddressList.get(item).getLongitude());
+                    lastSearchedPub = incomingAddressList.get(item);
+                    LatLng latLng = new LatLng(lastSearchedPub.getLatitude(), lastSearchedPub.getLongitude());
                     mapViewFragment.clearMarkers();
-                    mapViewFragment.drawMarker(latLng,incomingAddressList.get(item).getAddressLine(0), true);
+                    mapViewFragment.drawMarker(latLng,lastSearchedPub.getAddressLine(0), true);
+                    inputPubName.setEnabled(true);
                 }
             });
             builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -443,6 +438,34 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
         } else {
             Toast.makeText(getApplicationContext(), "Nie znaleziono podanego miejsca", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleAddNewPubButton(){
+        if(lastSearchedPub!=null && !inputPubName.getText().toString().equals("")) {
+            String addressLine = lastSearchedPub.getAddressLine(0).substring(0,lastSearchedPub.getAddressLine(0).indexOf(','));
+            String street = addressLine.substring(0,addressLine.lastIndexOf(' '));
+            String number = addressLine.substring(addressLine.lastIndexOf(' ')+1);
+            Log.d("New Pub", street);
+            Log.d("New Pub", number);
+
+            Pub pub = new Pub(-1, lastSearchedPub.getLatitude(), lastSearchedPub.getLongitude(),inputPubName.getText().toString(),street,number);
+            Log.d("New Pub",pub.getId()+" "+pub.getLatitude()+" "+pub.getLongitude()+" "+pub.getStreet()+" "+pub.getNumber()+" "+pub.getName());
+            inputPubLocalisation.setText("");
+            inputPubName.setText("");
+            inputPubName.setEnabled(false);
+
+            PostPub postPub = new PostPub(pub);
+            postPub.delegate = this;
+            postPub.execute();
+        }
+    }
+    @Override
+    public void postPubProcessFinished(boolean isSuccessful){
+        if (isSuccessful) {
+            Toast.makeText(this, "Dodano Pub", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Nie udało się dodać Pub'u", Toast.LENGTH_SHORT).show();
         }
     }
 

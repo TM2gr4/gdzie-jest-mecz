@@ -48,8 +48,6 @@ public class MapViewFragment extends Fragment {
     final static int LOCATION = 1;
     final static int GPS_SETTINGS = 2;
 
-    private Snackbar noSources;
-    private Snackbar noPermission;
     private GoogleApiClient googleApiClient;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
@@ -63,10 +61,7 @@ public class MapViewFragment extends Fragment {
         mMapView.onCreate(savedInstanceState);
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
-        noSources = Snackbar.make(mMapView, "Brak aktywnych źródeł Geolokacji!", Snackbar.LENGTH_INDEFINITE);
-        noPermission = Snackbar.make(mMapView, "Brak uprawnień Geolokacji!", Snackbar.LENGTH_INDEFINITE);
-
+        
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -159,19 +154,10 @@ public class MapViewFragment extends Fragment {
     private void askForPermission(int requestCode) {
         if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), INITIAL_PERMS[0]) != PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), INITIAL_PERMS[1]) != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            // if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), permission)) {
-                //This is called if user has denied the permission before
-                //In this case I am just asking the permission again
-              //ActivityCompat.requestPermissions(getActivity(), new String[]{permission}, requestCode);
-            //} else {
                 requestPermissions(INITIAL_PERMS, requestCode);
-            //}
         } else {
             mLocationPermissionGranted = true;
             askForGPS();
-            //Toast.makeText(getActivity(), "" + INITIAL_PERMS[0] + " is already granted.", Toast.LENGTH_LONG).show();
         }
     }
 
