@@ -252,6 +252,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.userAvatarImageView = headerLayout.findViewById(R.id.userAvatarImageView);
 
         this.searchTypeSwitch = findViewById(R.id.searchTypeSwitch);
+        handleSearchSwitchAction();
         this.searchBar = findViewById(R.id.searchText);
     }
 
