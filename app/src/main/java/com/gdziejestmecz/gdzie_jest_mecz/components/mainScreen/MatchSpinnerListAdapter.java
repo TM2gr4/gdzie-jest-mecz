@@ -20,7 +20,7 @@ public class MatchSpinnerListAdapter extends ArrayAdapter<Match> {
     private LayoutInflater inflater;
 
     public MatchSpinnerListAdapter(Context context, ArrayList<Match> data) {
-        super(context, -1, -1, data); //dubel id?
+        super(context, -1, -1, data);
         this.context = context;
         this.matchList = data;
 

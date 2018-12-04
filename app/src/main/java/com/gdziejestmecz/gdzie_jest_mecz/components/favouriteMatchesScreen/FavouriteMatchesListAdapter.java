@@ -1,4 +1,4 @@
-package com.gdziejestmecz.gdzie_jest_mecz.components.mainScreen;
+package com.gdziejestmecz.gdzie_jest_mecz.components.favouriteMatchesScreen;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -15,44 +15,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
-import com.gdziejestmecz.gdzie_jest_mecz.MainScreen;
 import com.gdziejestmecz.gdzie_jest_mecz.R;
-import com.gdziejestmecz.gdzie_jest_mecz.constants.Colors;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostFavouriteMatchesResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostIgnoredMatchesResponse;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.PostFavouriteMatch;
-import com.gdziejestmecz.gdzie_jest_mecz.utils.api.PostIgnoredMatch;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncDeleteFavouritedMatchesListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.DeleteFavouritedMatch;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class MatchListAdapter extends ArrayAdapter<Match> implements AsyncPostIgnoredMatchesResponse,
-                                                                    AsyncPostFavouriteMatchesResponse {
-    private final LayoutInflater inflater;
+public class FavouriteMatchesListAdapter extends ArrayAdapter<Match> implements AsyncDeleteFavouritedMatchesListResponse {
     private Context context;
     private ArrayList<Match> matchList;
-    private boolean isPubsListExpanded;
 
-    public MatchListAdapter(Context context, ArrayList<Match> data) {
+    public FavouriteMatchesListAdapter(Context context, ArrayList<Match> data) {
         super(context, -1, -1, data);
         this.context = context;
         this.matchList = data;
-        this.isPubsListExpanded = false;
-
-        inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        MatchListItemHolder holder = null;
-
-        final Match match = matchList.get(position);
+    public View getView(int position, View convertView, ViewGroup parent) {
+        FavouriteMatchesListItemHolder holder = null;
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.match_list_row, null, false);
-            holder = new MatchListItemHolder(context, convertView, match);
-            convertView.setTag(holder);
+            convertView = inflater.inflate(R.layout.favourite_matches_list_row, null, false);
+            holder = new FavouriteMatchesListItemHolder(convertView);
 
             LinearLayout swipeBackground = (LinearLayout) convertView.findViewById(R.id.swipe_background);
             SwipeLayout swipeLayout = (SwipeLayout) convertView.findViewById(R.id.swipe_layout);
@@ -60,16 +48,19 @@ public class MatchListAdapter extends ArrayAdapter<Match> implements AsyncPostIg
             ImageView icoBox = (ImageView) convertView.findViewById(R.id.ico_box);
             handleSwipeAction(position, swipeLayout, swipeBackground, swipeActionLabel, icoBox);
 
+            convertView.setTag(holder);
         } else {
-            holder = (MatchListItemHolder) convertView.getTag();
+            holder = (FavouriteMatchesListItemHolder) convertView.getTag();
         }
 
+        Match match = matchList.get(position);
         String date = match.getDate().split("-")[2] + "." + match.getDate().split("-")[1];
         String time = match.getTime().split(":")[0] + ":" + match.getTime().split(":")[1];
         holder.getDateText().setText(date);
         holder.getTimeText().setText(time);
         holder.getHomeTeamLabel().setText(match.getHomeTeam().getName());
         holder.getAwayTeamLabel().setText(match.getAwayTeam().getName());
+        holder.getPubsCount().setText(Integer.toString(match.getPubs().size()));
 
         Picasso.get().load(match.getHomeTeam().getLogoURL()).into((ImageView) convertView.findViewById(R.id.home_team_logo));
         Picasso.get().load(match.getAwayTeam().getLogoURL()).into((ImageView) convertView.findViewById(R.id.away_team_logo));
@@ -94,16 +85,12 @@ public class MatchListAdapter extends ArrayAdapter<Match> implements AsyncPostIg
 
             @Override
             public void onStartOpen(SwipeLayout layout) {
-                if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
-                    Log.d("SwipeEvent", "dragged left");
-                    swipeBackground.setBackgroundColor(Colors.lapisBlue);
-                    swipeActionLabel.setText("Dodano do obserwowanych");
-                    icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star_border_white_48dp));
+                if(layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
 
                 } else {
                     Log.d("SwipeEvent", "dragged right");
                     swipeBackground.setBackgroundColor(Color.RED);
-                    swipeActionLabel.setText("Usunięty");
+                    swipeActionLabel.setText("Nie obserwujesz");
                     icoBox.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_delete_forever_white_48dp));
                 }
             }
@@ -112,19 +99,7 @@ public class MatchListAdapter extends ArrayAdapter<Match> implements AsyncPostIg
             public void onOpen(final SwipeLayout layout) {
                 Log.d("SwipeEvent", "onOpen");
 
-                if (layout.getDragEdge() == SwipeLayout.DragEdge.Left) {
-                    Log.d("SwipeEvent", "opened left");
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            addToFavourited(matchList.get(position));
-
-                            layout.close(true);
-                        }
-                    }, 1000);
-                } else {
+                if (layout.getDragEdge() == SwipeLayout.DragEdge.Right) {
                     Log.d("SwipeEvent", "opened right");
 
                     final Handler handler = new Handler();
@@ -151,46 +126,32 @@ public class MatchListAdapter extends ArrayAdapter<Match> implements AsyncPostIg
 
     private void deleteEvent(int itemId){
         try {
-            addToIgnored(matchList.get(itemId));
+            disfavourMatch(matchList.get(itemId));
+            Log.e("EventAction", "removed favorite event" + itemId);
         } catch(Exception e) {
             Toast.makeText(context, "Blad! Spróbuj później", Toast.LENGTH_SHORT).show();
         }
+
+        refreshMatchesList();
     }
 
-    private void refreshMatchList() {
+    private void disfavourMatch(Match match) {
+        DeleteFavouritedMatch deleteFavouritedMatch = new DeleteFavouritedMatch(match);
+        deleteFavouritedMatch.delegate = this;
+        deleteFavouritedMatch.execute();
+    }
+
+    private void refreshMatchesList() {
         this.notifyDataSetChanged();
     }
 
-    private void addToIgnored(Match match) {
-        PostIgnoredMatch postIgnoredMatch = new PostIgnoredMatch(match);
-        postIgnoredMatch.delegate = this;
-        postIgnoredMatch.execute();
-    }
-
-    private void addToFavourited(Match match) {
-        PostFavouriteMatch postFavouriteMatch = new PostFavouriteMatch(match);
-        postFavouriteMatch.delegate = this;
-        postFavouriteMatch.execute();
-    }
-
     @Override
-    public void postIgnoredMatchProcessFinished(Match match) {
+    public void retrieveDeleteFavouritedMatchesProcessFinished(Match match) {
         if (match != null) {
             matchList.remove(match);
-            Toast.makeText(context, "Dodano do ignorowanych", Toast.LENGTH_SHORT).show();
-            refreshMatchList();
+            refreshMatchesList();
         } else {
-            Toast.makeText(context, "Błąd. Spróbuj ponownie", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void postFavouriteMatches(Match match) {
-        if (match != null) {
-            Toast.makeText(context, "Dodano do obserwowanych", Toast.LENGTH_SHORT).show();
-            refreshMatchList();
-        } else {
-            Toast.makeText(context, "Błąd. Spróbuj ponownie", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Blad! Spróbuj później", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -7,21 +7,18 @@
     >
 
     <Button
-        android:id="@+id/watched_matches_close_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="28sp"
-        app:fontFamily="@font/montserrat"
-        android:textColor="@color/lightGray"
-        android:background="@android:color/transparent"
-        android:text="X"
-        android:layout_gravity="right"/>
+        android:id="@+id/ignored_matches_close_btn"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="right"
+        android:scaleType="fitStart"
+        android:background="@drawable/ic_close_black_24dp" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Twoje obserwowane mecze:"
+        android:text="Twoje ignorowane mecze:"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="6dp"
         android:layout_marginRight="10dp"
@@ -43,7 +40,7 @@
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/watched_matches_list"
+        android:id="@+id/ignored_matches_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"/>
