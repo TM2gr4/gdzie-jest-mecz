@@ -7,7 +7,7 @@
     >
 
     <Button
-        android:id="@+id/watched_matches_close_btn"
+        android:id="@+id/favourite_matches_close_btn"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="right"
@@ -40,7 +40,7 @@
     </RelativeLayout>
 
     <ListView
-        android:id="@+id/watched_matches_list"
+        android:id="@+id/favourite_matches_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"/>
