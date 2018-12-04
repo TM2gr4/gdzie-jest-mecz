@@ -8,9 +8,9 @@
     <ImageView
         android:id="@+id/logo_box"
         android:layout_width="313dp"
-        android:layout_height="94dp"
+        android:layout_height="85dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:src="@drawable/logo" />
 
     <TextView
@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:orientation="horizontal">
 
         <View
@@ -55,15 +55,45 @@
 
     </LinearLayout>
 
-    <ImageView
+    <LinearLayout
+        android:orientation="horizontal"
+        android:clickable="true"
         android:id="@+id/btn_google"
-        android:layout_width="272dp"
-        android:layout_height="42dp"
+        android:layout_width="295dp"
+        android:layout_height="46dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/spiner_background"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/google_button"
+        android:paddingLeft="10dp"
         android:elevation="6dp"
-        android:src="@drawable/google_sing_in_button" />
+        android:textAllCaps="false"
+        android:text="Zaloguj z Google"
+        android:textColor="@color/boneWhite"
+        android:textAlignment="gravity">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center|left"
+            android:background="@drawable/ic_google_logo"
+            android:elevation="6dp"
+            />
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="100dp"
+            android:background="#af3927"
+            android:layout_marginLeft="8dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:text="Zaloguj z Google"
+            android:textColor="@color/boneWhite"
+            android:layout_gravity="center"
+            android:paddingLeft="25dp"
+            android:textSize="17sp"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView3"

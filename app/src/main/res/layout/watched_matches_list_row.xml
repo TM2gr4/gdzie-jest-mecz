@@ -16,23 +16,25 @@
             android:id="@+id/ll_main_wrapper"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:padding="6dp">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:id="@+id/ll_date_time_wrapper"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:gravity="center_vertical|center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingRight="3dp">
 
                 <TextView
                     android:id="@+id/date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="0.1"
                     android:text="00.00"
-                    android:textColor="@color/lightGray" />
+                    android:textColor="@color/lightGray"
+                    android:gravity="top"
+                    android:paddingTop="3dp"/>
 
                 <TextView
                     android:id="@+id/time"
@@ -42,16 +44,25 @@
                     android:gravity="center"
                     android:text="00:00"
                     android:textColor="@color/blackyBlack"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:paddingBottom="13dp"/>
 
             </LinearLayout>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/barerlyGray"/>
 
             <LinearLayout
                 android:id="@+id/teams_and_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingLeft="3dp"
+                android:padding="6dp">
 
                 <LinearLayout
                     android:id="@+id/location_info"
@@ -65,7 +76,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_marker" />
+                        android:src="@drawable/ic_marker" />
 
                     <TextView
                         android:id="@+id/pubs_count_label"
@@ -92,7 +103,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center_vertical|center_horizontal"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingBottom="6dp">
 
                     <ImageView
                         android:id="@+id/home_team_logo"

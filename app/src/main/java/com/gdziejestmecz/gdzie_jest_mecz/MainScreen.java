@@ -72,7 +72,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private MapViewFragment mapViewFragment;
     private DrawerLayout drawer_layout;
     private NavigationView sideBar;
-    private Button plusBtn, menuBtn;
+    private Button  menuBtn;
+    private ImageButton plusBtn;
     private RelativeLayout loadingMatches;
     private ActionBarDrawerToggle mToogle;
 
