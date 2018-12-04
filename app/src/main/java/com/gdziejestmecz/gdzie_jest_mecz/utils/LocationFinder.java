@@ -32,14 +32,5 @@ public class LocationFinder extends AsyncTask<Object, List<Address>, List<Addres
     @Override
     protected void onPostExecute(List<Address> addressList) {
         asyncLocationFinderResponse.onLocationSeachCompleted(addressList);
-
-        /*
-        Address address;
-        if (addressList != null && addressList.size() > 0) {
-            address = addressList.get(0);
-            mapViewFragment.drawMarker(new LatLng(address.getLatitude(), address.getLongitude()), location);
-        } else {
-            Toast.makeText(getApplicationContext(), "Nie znaleziono podanego miejsca", Toast.LENGTH_SHORT).show();
-        }*/
     }
 }
