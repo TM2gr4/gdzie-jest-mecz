@@ -73,7 +73,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
     private ListView matchListContent;
 
     private View addMatchPanel;
-    private EditText input_desc;
+//    private EditText input_desc;
     private Spinner input_match, input_pub;
     private Button addMatchButton;
     private Button closeAddMatchPanel;
@@ -204,7 +204,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
         Match match = (Match) input_match.getSelectedItem();
         Pub pub = (Pub) input_pub.getSelectedItem();
-        String desc = input_desc.getText().toString();
+        String desc = "";//input_desc.getText().toString();
 
         PostMatch postMatch = new PostMatch(match, pub, desc);
         postMatch.delegate = this;
@@ -219,7 +219,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         this.addMatchPanel = findViewById(R.id.add_match_panel);
         this.input_match = findViewById(R.id.input_match);
         this.input_pub = findViewById(R.id.input_pub);
-        this.input_desc = findViewById(R.id.input_desc);
+//        this.input_desc = findViewById(R.id.input_desc);
         this.addMatchButton = findViewById(R.id.add_btn_add_match_panel);
         this.progressBarAddMatch = findViewById(R.id.loadingAddMatch);
         this.closeAddMatchPanel = findViewById(R.id.x_btn_add_match_panel);

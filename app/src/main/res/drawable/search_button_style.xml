@@ -18,7 +18,7 @@
                 android:startColor="#ffffff"
                 android:angle="270" />
             <corners
-                android:radius="5dp" />
+                android:radius="3dp" />
             <padding
                 android:left="5dp"
                 android:top="5dp"
@@ -35,7 +35,7 @@
                 android:startColor="#ffffff"
                 android:angle="270" />
             <corners
-                android:radius="5dp" />
+                android:radius="3dp" />
         </shape>
     </item>
 </selector>

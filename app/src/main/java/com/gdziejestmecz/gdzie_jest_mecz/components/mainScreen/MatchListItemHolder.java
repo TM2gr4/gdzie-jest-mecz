@@ -48,7 +48,7 @@ public class MatchListItemHolder {
                     getPubsList().setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, 0));
                 } else {
                     getPubsList().setAdapter(new PubListAdapter(context, match.getPubs()));
-                    int theSizeIWant = match.getPubs().size() * 40;
+                    int theSizeIWant = match.getPubs().size() * 80;
                     getPubsList().setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, theSizeIWant));
                 }
                 isPubsListExpanded = !isPubsListExpanded;
