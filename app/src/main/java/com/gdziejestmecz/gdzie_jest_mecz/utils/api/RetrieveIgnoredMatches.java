@@ -15,30 +15,26 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class RetrieveWatchedMatches extends AsyncTask<String, Void, ArrayList<Match>> {
-    private final int userId;
-    public AsyncWatchedMatchesListResponse delegate = null;
+public class RetrieveIgnoredMatches extends AsyncTask<String, Void, ArrayList<Match>> {
+    public AsyncIgnoredMatchesListResponse delegate = null;
 
-    public RetrieveWatchedMatches(int userId) {
-        this.userId = userId;
-    }
     @Override
     protected ArrayList<Match> doInBackground(String... strings) {
-        ArrayList<Match> matches = getMatches(userId);
+        ArrayList<Match> matches = getMatches();
         return matches;
     }
 
     @Override
     protected void onPostExecute(ArrayList<Match> matchData) {
         super.onPostExecute(matchData);
-        Log.d("API_CALL", "Request RETRIEVE WATCHED MATCHES DONE");
-        delegate.retrieveWatchedMatchesProcessFinished(matchData);
+        Log.e("API_CALL", "Request RETRIEVE IGNORED MATCHES DONE");
+        delegate.retrieveIgnoredMatchesProcessFinished(matchData);
     }
 
-    private ArrayList<Match> getMatches(int userId){
+    private ArrayList<Match> getMatches(){
         ArrayList<Match> matches = new ArrayList<Match>();
         try {
-            String result = Api.get(ServerInfo.getRootUrl() + ServerInfo.getEndpointMatches());//getEndpointWatchedMatches() + "/" + Integer.toString(userId));
+            String result = Api.get(ServerInfo.getRootUrl() + ServerInfo.getEndpointIgnoredMatches());
             JSONArray jsonArray = new JSONArray(result);
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -76,12 +72,12 @@ public class RetrieveWatchedMatches extends AsyncTask<String, Void, ArrayList<Ma
                 Match match = new Match(id, homeTeam, awayTeam, date, time, pubs);
                 matches.add(match);
             }
-            Log.d("API_CALL", "got WATCHED MATCHES: " + result);
+            Log.e("API_CALL", "got IGNORED MATCHES: " + result);
             return matches;
         }catch(JSONException e) {
-            Log.d("JSON", "could parse WATCHED MATCHES, because: " + e.getMessage());
+            Log.e("JSON", "could parse IGNORED MATCHES, because: " + e.getMessage());
         }catch(IOException e) {
-            Log.d("API_CALL", "could not fetch for WATCHED MATCHES, because: " + e.getMessage());
+            Log.e("API_CALL", "could not fetch for IGNORED MATCHES, because: " + e.getMessage());
         }
 
         return matches;

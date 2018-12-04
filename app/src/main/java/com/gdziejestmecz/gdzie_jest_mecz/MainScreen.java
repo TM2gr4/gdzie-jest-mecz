@@ -32,7 +32,9 @@ import com.gdziejestmecz.gdzie_jest_mecz.models.Match;
 import com.gdziejestmecz.gdzie_jest_mecz.models.Pub;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.AsyncLocationFinderResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.LocationFinder;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncFavouriteMatchesListResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncMatchListResponse;
+import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostFavouriteMatchesResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostGoogleTokenResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPostMatchResponse;
 import com.gdziejestmecz.gdzie_jest_mecz.utils.api.AsyncPubListResponse;
@@ -54,7 +56,6 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,8 +124,7 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         if(isLoggedManually){
             getAndRenderMatches();
             getPubs();
-        }
-        else {
+        } else {
             authorize();
         }
     }
@@ -141,7 +141,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
         RetrieveMatches retrieveMatches = new RetrieveMatches();
         retrieveMatches.delegate = this;
-
         retrieveMatches.execute();
     }
 
@@ -375,6 +374,8 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         if (requestCode == MapViewFragment.GPS_SETTINGS){
             if(getSupportFragmentManager().findFragmentByTag("fragmentMap")!=null)
                 getSupportFragmentManager().findFragmentByTag("fragmentMap").onActivityResult(requestCode, resultCode, data);
+        } else if (requestCode == 0) {
+            getAndRenderMatches();
         }
         else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -466,10 +467,11 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
         int id = item.getItemId();
 
         if (id == R.id.watched_matches_screen_label) {
-            Intent myIntent = new Intent(this.getApplicationContext(), WatchedMatchesScreen.class);
+            Intent myIntent = new Intent(this.getApplicationContext(), FavouriteMatchesScreen.class);
             startActivityForResult(myIntent, 0);
         } else if (id == R.id.ignored_matches_screen_label) {
-
+            Intent myIntent = new Intent(this.getApplicationContext(), IgnoredMatchesScreen.class);
+            startActivityForResult(myIntent, 0);
         } else if (id == R.id.sign_out_label) {
             signOut();
         }
@@ -491,7 +493,6 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
             Toast.makeText(this, "Ups, nie mozna dodać meczu :-(", Toast.LENGTH_SHORT).show();
         }
         progressBarAddMatch.setVisibility(View.GONE);
-        
         addMatchButton.setEnabled(true);
         closeAddMatchPanel.setEnabled(true);
     }
@@ -511,7 +512,13 @@ public class MainScreen extends FragmentActivity implements GoogleApiClient.OnCo
 
     @Override
     public void postGoogleTokenProcessFinished(GoogleTokenResponse token) {
-        TokenStore.setAccessToken(token.getAccessToken());
+        try {
+            TokenStore.setAccessToken(token.getAccessToken());
+        } catch(Exception e) {
+            Toast.makeText(MainScreen.this, "Twoja sesja wygasła. Zaloguj sie ponownie", Toast.LENGTH_LONG).show();
+            signOut();
+            return;
+        }
         Log.d("LOGIN RESPONSE" , token.getAccessToken() + " " + token.getRefreshToken());
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString("access_token", token.getRefreshToken()).apply();
         getAndRenderMatches();
